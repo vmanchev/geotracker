@@ -1,56 +1,147 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function($scope, $ionicModal, $timeout) {
+        .controller('AppCtrl', function ($scope, $ionicModal, $timeout) {
 
-  // With the new view caching in Ionic, Controllers are only called
-  // when they are recreated or on app start, instead of every page change.
-  // To listen for when this page is active (for example, to refresh data),
-  // listen for the $ionicView.enter event:
-  //$scope.$on('$ionicView.enter', function(e) {
-  //});
+        })
 
-  // Form data for the login modal
-  $scope.loginData = {};
+        .controller('TrackController', function ($scope, $cordovaGeolocation) {
+            //has tracking been started or not
+            $scope.isTracking = false;
 
-  // Create the login modal that we will use later
-  $ionicModal.fromTemplateUrl('templates/login.html', {
-    scope: $scope
-  }).then(function(modal) {
-    $scope.modal = modal;
-  });
+            //container for geo location points
+            $scope.points = [];
 
-  // Triggered in the login modal to close it
-  $scope.closeLogin = function() {
-    $scope.modal.hide();
-  };
+            //has watcher been started or not
+            $scope.trackWatch = null;
 
-  // Open the login modal
-  $scope.login = function() {
-    $scope.modal.show();
-  };
+            $scope.trackId = (new Date()).toTimeString();
 
-  // Perform the login action when the user submits the login form
-  $scope.doLogin = function() {
-    console.log('Doing login', $scope.loginData);
+            //start tracking
+            $scope.startTracking = function () {
 
-    // Simulate a login delay. Remove this and replace with your login
-    // code if using a login system
-    $timeout(function() {
-      $scope.closeLogin();
-    }, 1000);
-  };
-})
+                $scope.isTracking = true;
 
-.controller('PlaylistsCtrl', function($scope) {
-  $scope.playlists = [
-    { title: 'Reggae', id: 1 },
-    { title: 'Chill', id: 2 },
-    { title: 'Dubstep', id: 3 },
-    { title: 'Indie', id: 4 },
-    { title: 'Rap', id: 5 },
-    { title: 'Cowbell', id: 6 }
-  ];
-})
+                $cordovaGeolocation.getCurrentPosition({
+                    timeout: 10000,
+                    enableHighAccuracy: true,
+                    maximumAge: 3000
+                }).then($scope.positionSuccess, $scope.positionError);
+            }
 
-.controller('PlaylistCtrl', function($scope, $stateParams) {
-});
+            /**
+             * Track success callback
+             * 
+             * Will be called on position change
+             * 
+             * @param {type} data
+             * @returns {undefined}
+             */
+            $scope.positionSuccess = function (data) {
+
+                //add the new point to the array of points
+                $scope.points.push(data);
+
+                //if watcher hasn't been started yet, start it now
+                if (!$scope.trackWatch) {
+                    $scope.watchTracking();
+                }
+
+                //show position on the map
+                $scope.getMap(data.coords.latitude, data.coords.longitude);
+            }
+
+            //error callback
+            $scope.positionError = function (error) {
+                console.log("error", error)
+            }
+
+            /**
+             * Position change track
+             * 
+             * Will track new position change every 3 seconds
+             * 
+             * @returns {undefined}
+             */
+            $scope.watchTracking = function () {
+
+                $scope.trackWatch = $cordovaGeolocation.watchPosition({
+                    timeout: 3000,
+                    enableHighAccuracy: false // may cause errors if true
+                });
+
+                $scope.trackWatch.then(null, $scope.positionError, $scope.positionSuccess);
+
+            }
+
+            //display position on the map
+            $scope.getMap = function (latitude, longitude) {
+
+                var mapOptions = {
+                    center: new google.maps.LatLng(0, 0),
+                    zoom: 1,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                };
+
+                map = new google.maps.Map
+                        (document.getElementById("map"), mapOptions);
+
+
+                var latLong = new google.maps.LatLng(latitude, longitude);
+
+                var marker = new google.maps.Marker({
+                    position: latLong
+                });
+
+                marker.setMap(map);
+                map.setZoom(15);
+                map.setCenter(marker.getPosition());
+            }
+
+            /**
+             * Stop tracking
+             * 
+             * 1. Save the current track in the history
+             * 2. Stop the watcher
+             * 3. Clear the points array
+             * 
+             * @returns {undefined}
+             */
+            $scope.stopTracking = function () {
+                $scope.isTracking = false;
+                $scope.trackWatch.clearWatch();
+                
+                $scope.saveHistory();
+                
+                $scope.points = [];
+            }
+
+            $scope.saveHistory = function () {
+                var historyTracks = localStorage.getItem("tracks");
+                
+                if (!historyTracks) {
+                    historyTracks = [];
+                }else{
+                    historyTracks = JSON.parse(historyTracks);
+                }
+
+                historyTracks.push({
+                    trackId: $scope.trackId,
+                    points: $scope.points
+                });
+
+                localStorage.setItem("tracks", JSON.stringify(historyTracks));
+            }
+
+        })
+
+        .controller('HistoryController', function ($scope) {
+
+            var items = localStorage.getItem('tracks');
+
+            if(!items){
+                $scope.items = [];
+            }else{
+                $scope.items = JSON.parse(items);
+            }
+
+        });

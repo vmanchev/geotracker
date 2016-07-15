@@ -1,0 +1,15 @@
+<ion-view view-title="History">
+    <ion-content>
+
+        <div class="list">
+            <a class="item item-icon-left" href="#" data-ng-repeat="item in items track by $index">
+                <i class="icon ion-android-bicycle"></i>
+                {{ item.trackId | date : 'dd/MM/yyyy HH:mm:ss' }}
+            </a>
+        </div>
+
+
+
+
+    </ion-content>
+</ion-view>
