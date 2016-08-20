@@ -34,6 +34,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova'])
 
                     .state('app.track', {
                         url: '/track',
+                        cache: false,
                         views: {
                             'menuContent': {
                                 templateUrl: 'templates/track.html',
@@ -44,10 +45,21 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova'])
 
                     .state('app.history', {
                         url: '/history',
+                        cache: false,
                         views: {
                             'menuContent': {
                                 templateUrl: 'templates/history.html',
                                 controller: 'HistoryController'
+                            }
+                        }
+                    })
+
+                    .state('app.trackview', {
+                        url: '/track/:trackId',
+                        views: {
+                            'menuContent': {
+                                templateUrl: 'templates/track-view.html',
+                                controller: 'TrackViewController'
                             }
                         }
                     });

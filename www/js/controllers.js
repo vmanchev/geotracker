@@ -14,7 +14,7 @@ angular.module('starter.controllers', [])
             //has watcher been started or not
             $scope.trackWatch = null;
 
-            $scope.trackId = (new Date()).toTimeString();
+            $scope.trackId = (new Date()).getTime();
 
             //start tracking
             $scope.startTracking = function () {
@@ -47,7 +47,7 @@ angular.module('starter.controllers', [])
                 }
 
                 //show position on the map
-                $scope.getMap(data.coords.latitude, data.coords.longitude);
+                $scope.updateMap(data.coords.latitude, data.coords.longitude);
             }
 
             //error callback
@@ -73,18 +73,25 @@ angular.module('starter.controllers', [])
 
             }
 
-            //display position on the map
-            $scope.getMap = function (latitude, longitude) {
-
+            /**
+             * Initialize map
+             */
+            $scope.initMap = function () {
                 var mapOptions = {
-                    center: new google.maps.LatLng(0, 0),
                     zoom: 1,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
 
-                map = new google.maps.Map
+                $scope.map = new google.maps.Map
                         (document.getElementById("map"), mapOptions);
+            }
 
+            //display position on the map
+            $scope.updateMap = function (latitude, longitude) {
+
+                if (angular.isUndefined($scope.map)) {
+                    $scope.initMap();
+                }
 
                 var latLong = new google.maps.LatLng(latitude, longitude);
 
@@ -92,9 +99,9 @@ angular.module('starter.controllers', [])
                     position: latLong
                 });
 
-                marker.setMap(map);
-                map.setZoom(15);
-                map.setCenter(marker.getPosition());
+                marker.setMap($scope.map);
+                $scope.map.setZoom(15);
+                $scope.map.setCenter(marker.getPosition());
             }
 
             /**
@@ -109,18 +116,16 @@ angular.module('starter.controllers', [])
             $scope.stopTracking = function () {
                 $scope.isTracking = false;
                 $scope.trackWatch.clearWatch();
-                
+
                 $scope.saveHistory();
-                
-                $scope.points = [];
             }
 
             $scope.saveHistory = function () {
                 var historyTracks = localStorage.getItem("tracks");
-                
+
                 if (!historyTracks) {
                     historyTracks = [];
-                }else{
+                } else {
                     historyTracks = JSON.parse(historyTracks);
                 }
 
@@ -130,6 +135,10 @@ angular.module('starter.controllers', [])
                 });
 
                 localStorage.setItem("tracks", JSON.stringify(historyTracks));
+                
+                $scope.points = [];
+                $scope.trackWatch = null;
+                $scope.trackId = null;
             }
 
         })
@@ -138,10 +147,24 @@ angular.module('starter.controllers', [])
 
             var items = localStorage.getItem('tracks');
 
-            if(!items){
+            if (!items) {
                 $scope.items = [];
-            }else{
+            } else {
                 $scope.items = JSON.parse(items);
             }
 
+        })
+
+        .controller('TrackViewController', function ($scope, $state, $stateParams) {
+
+            var tracks = JSON.parse(localStorage.getItem('tracks'));
+
+            $scope.track = _.find(tracks, {trackId: parseInt($stateParams.trackId)});
+
+            //@todo - needs a confirmation dialog
+            $scope.deleteTrack = function(){
+                _.pull(tracks, $scope.track);
+                localStorage.setItem("tracks", JSON.stringify(tracks));
+                $state.go('app.history');
+            }
         });

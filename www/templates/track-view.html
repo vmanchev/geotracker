@@ -1,0 +1,29 @@
+<ion-view view-title="Details">
+    <ion-content>
+
+        <div class="card" data-ng-repeat="point in track.points track by $index">
+            <div class="item item-divider">
+                Point #{{ $index+1 }}
+            </div>
+            <div class="item item-text-wrap">
+                Longitutde: {{ point.coords.longitude }}<br />
+                Latitude: {{ point.coords.latitude }}<br />
+                Altitude: {{ point.coords.altitude }}<br />
+                Heading: {{ point.coords.heading }}<br />
+                Speed: {{ point.coords.speed }}<br />
+            </div>
+            <div class="item item-divider">
+                {{ point.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}
+            </div>
+        </div>
+
+
+
+        <div class="row">
+            <div class="col text-center">
+                <button class="button button-assertive button-full" data-ng-click="deleteTrack();">Delete this track</button>
+            </div>
+        </div>
+        
+    </ion-content>
+</ion-view>
