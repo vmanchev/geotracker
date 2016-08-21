@@ -1,10 +1,10 @@
-<ion-view view-title="Home">
+<ion-view view-title="{{ 'nav.home' | translate }}">
     <ion-content>
 
         <div class="row">
             <div class="col text-center">
-                <button class="button button-positive button-full" data-ng-click="startTracking();" data-ng-show="!isTracking">Start new track</button>
-                <button class="button button-assertive button-full" data-ng-click="stopTracking();" data-ng-show="isTracking">Stop</button>
+                <button class="button button-positive button-full" data-ng-click="startTracking();" data-ng-show="!isTracking">{{ "track.start" | translate }}</button>
+                <button class="button button-assertive button-full" data-ng-click="stopTracking();" data-ng-show="isTracking">{{ "track.stop" | translate }}</button>
             </div>
         </div>
 
@@ -16,14 +16,14 @@
         
         <div class="card" data-ng-repeat="point in points track by $index">
             <div class="item item-divider">
-                Point #{{ $index+1 }}
+                {{ "track.point_no" | translate : {id: $index+1} }}
             </div>
             <div class="item item-text-wrap">
-                Longitutde: {{ point.coords.longitude }}<br />
-                Latitude: {{ point.coords.latitude }}<br />
-                Altitude: {{ point.coords.altitude }}<br />
-                Heading: {{ point.coords.heading }}<br />
-                Speed: {{ point.coords.speed }}<br />
+                {{ "track.longitude" | translate }}: {{ point.coords.longitude }}<br />
+                {{ "track.latitude" | translate }}: {{ point.coords.latitude }}<br />
+                {{ "track.altitude" | translate }}: {{ point.coords.altitude }}<br />
+                {{ "track.direction" | translate }}: {{ point.coords.heading }}<br />
+                {{ "track.speed" | translate }}: {{ point.coords.speed }}<br />
             </div>
             <div class="item item-divider">
                 {{ point.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}

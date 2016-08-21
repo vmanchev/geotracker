@@ -1,16 +1,16 @@
-<ion-view view-title="Details">
+<ion-view view-title="{{ 'track.details' | translate }}">
     <ion-content>
 
         <div class="card" data-ng-repeat="point in track.points track by $index">
             <div class="item item-divider">
-                Point #{{ $index+1 }}
+                {{ "track.point_no" | translate : {id: $index+1} }}
             </div>
             <div class="item item-text-wrap">
-                Longitutde: {{ point.coords.longitude }}<br />
-                Latitude: {{ point.coords.latitude }}<br />
-                Altitude: {{ point.coords.altitude }}<br />
-                Heading: {{ point.coords.heading }}<br />
-                Speed: {{ point.coords.speed }}<br />
+                {{ "track.longitude" | translate }}: {{ point.coords.longitude }}<br />
+                {{ "track.latitude" | translate }}: {{ point.coords.latitude }}<br />
+                {{ "track.altitude" | translate }}: {{ point.coords.altitude }}<br />
+                {{ "track.direction" | translate }}: {{ point.coords.heading }}<br />
+                {{ "track.speed" | translate }}: {{ point.coords.speed }}<br />
             </div>
             <div class="item item-divider">
                 {{ point.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}
@@ -21,7 +21,7 @@
 
         <div class="row">
             <div class="col text-center">
-                <button class="button button-assertive button-full" data-ng-click="deleteTrack();">Delete this track</button>
+                <button class="button button-assertive button-full" data-ng-click="deleteTrack();">{{ "track.delete" | translate }}</button>
             </div>
         </div>
         
