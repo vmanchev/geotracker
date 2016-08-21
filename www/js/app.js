@@ -62,7 +62,18 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'pascalp
                                 controller: 'TrackViewController'
                             }
                         }
+                    })
+                    
+                    .state('app.settings', {
+                        url: '/settings',
+                        views: {
+                            'menuContent': {
+                                templateUrl: 'templates/settings.html',
+                                controller: 'SettingsController'
+                            }
+                        }
                     });
+                    
             // if none of the above states are matched, use this as the fallback
             $urlRouterProvider.otherwise('/app/track');
         })
@@ -73,5 +84,9 @@ angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'pascalp
             
             $translateProvider.useSanitizeValueStrategy('escape');
             
-            $translateProvider.preferredLanguage('bg');
+            var selectedLanguage = JSON.parse(localStorage.getItem("locale"));
+
+            var useLanguage = (!_.isNull(selectedLanguage)) ? selectedLanguage.id : 'bg';
+            
+            $translateProvider.preferredLanguage(useLanguage);
         });

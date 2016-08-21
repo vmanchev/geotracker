@@ -135,7 +135,7 @@ angular.module('starter.controllers', [])
                 });
 
                 localStorage.setItem("tracks", JSON.stringify(historyTracks));
-                
+
                 $scope.points = [];
                 $scope.trackWatch = null;
                 $scope.trackId = null;
@@ -162,9 +162,33 @@ angular.module('starter.controllers', [])
             $scope.track = _.find(tracks, {trackId: parseInt($stateParams.trackId)});
 
             //@todo - needs a confirmation dialog
-            $scope.deleteTrack = function(){
+            $scope.deleteTrack = function () {
                 _.pull(tracks, $scope.track);
                 localStorage.setItem("tracks", JSON.stringify(tracks));
                 $state.go('app.history');
             }
+        })
+
+        .controller('SettingsController', function ($scope, $translate, $timeout) {
+
+            
+            $scope.availableLanguages = [];
+
+            //get available languages
+            angular.forEach(TRANSLATIONS, function(keys, id){
+                $scope.availableLanguages.push({
+                    id: id,
+                    name: keys.name
+                });
+            });
+
+            $timeout(function(){
+                $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
+            });
+
+            $scope.setPreferedLanguage = function(selectedLanguage){
+                localStorage.setItem("locale", JSON.stringify(selectedLanguage));
+                $translate.use(selectedLanguage.id)
+            }
+
         });
