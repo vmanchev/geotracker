@@ -7,19 +7,12 @@ angular.module('starter.controllers', [])
         .controller('TrackController', function ($scope, $cordovaGeolocation) {
             //has tracking been started or not
             $scope.isTracking = false;
-
-            //container for geo location points
-            $scope.points = [];
-
-            //has watcher been started or not
-            $scope.trackWatch = null;
-
-            $scope.trackId = (new Date()).getTime();
+            $scope.readyToSave = false;
 
             //start tracking
             $scope.startTracking = function () {
 
-                $scope.isTracking = true;
+                $scope.$broadcast('tracking:started');
 
                 $cordovaGeolocation.getCurrentPosition({
                     timeout: 10000,
@@ -104,6 +97,20 @@ angular.module('starter.controllers', [])
                 $scope.map.setCenter(marker.getPosition());
             }
 
+            $scope.resetMap = function () {
+                //Find the map DOM element
+                var mapElement = document.getElementById('map');
+
+                //remove the html code
+                mapElement.innerHTML = '';
+                
+                //remove the inline style
+                mapElement.removeAttribute("style");
+                
+                //reset our internal map reference
+                $scope.map = null;
+            };
+
             /**
              * Stop tracking
              * 
@@ -117,7 +124,7 @@ angular.module('starter.controllers', [])
                 $scope.isTracking = false;
                 $scope.trackWatch.clearWatch();
 
-                $scope.saveHistory();
+                $scope.$broadcast('tracking:stopped');
             }
 
             $scope.saveHistory = function () {
@@ -131,15 +138,54 @@ angular.module('starter.controllers', [])
 
                 historyTracks.push({
                     trackId: $scope.trackId,
-                    points: $scope.points
+                    points: $scope.points,
+                    info: _.omitBy($scope.trackInfo, function (value, key) {
+                        return _.isEmpty(value);
+                    })
                 });
 
                 localStorage.setItem("tracks", JSON.stringify(historyTracks));
 
-                $scope.points = [];
-                $scope.trackWatch = null;
-                $scope.trackId = null;
+                $scope.$broadcast('tracking:saved');
             }
+
+            $scope.$on('tracking:started', function (event, data) {
+
+                $scope.isTracking = true;
+
+                //container for geo location points
+                $scope.points = [];
+
+                //has watcher been started or not
+                $scope.trackWatch = null;
+
+                $scope.trackId = (new Date()).getTime();
+
+                $scope.trackInfo = {
+                    title: null,
+                    notes: null
+                };
+
+                $scope.initMap();
+            });
+
+            $scope.$on('tracking:stopped', function (event, data) {
+                //1. allow the client to optionally add title and description
+
+                //2. show the save button
+
+                $scope.readyToSave = true;
+            });
+
+            $scope.$on('tracking:saved', function (event, data) {
+
+                $scope.resetMap();
+
+                $scope.points = [];
+                $scope.readyToSave = false;
+
+
+            });
 
         })
 
@@ -171,22 +217,22 @@ angular.module('starter.controllers', [])
 
         .controller('SettingsController', function ($scope, $translate, $timeout) {
 
-            
+
             $scope.availableLanguages = [];
 
             //get available languages
-            angular.forEach(TRANSLATIONS, function(keys, id){
+            angular.forEach(TRANSLATIONS, function (keys, id) {
                 $scope.availableLanguages.push({
                     id: id,
                     name: keys.name
                 });
             });
 
-            $timeout(function(){
+            $timeout(function () {
                 $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
             });
 
-            $scope.setPreferedLanguage = function(selectedLanguage){
+            $scope.setPreferedLanguage = function (selectedLanguage) {
                 localStorage.setItem("locale", JSON.stringify(selectedLanguage));
                 $translate.use(selectedLanguage.id)
             }

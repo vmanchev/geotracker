@@ -4,7 +4,11 @@
         <div class="list">
             <a class="item item-icon-left" ui-sref="app.trackview({trackId: item.trackId})" data-ng-repeat="item in items track by $index">
                 <i class="icon ion-map"></i>
-                {{ item.trackId | date : 'dd/MM/yyyy HH:mm:ss' }}
+                
+                <span data-ven="1" data-ng-if="item.info.title">{{ item.info.title }}</span>
+                <span data-ven="2" data-ng-if="!item.info.title && item.info.notes">{{ item.info.notes }}</span>
+                
+                <span data-ven="3" data-ng-if="!item.info.title && !item.info.notes">{{ item.trackId | date : 'dd/MM/yyyy HH:mm:ss' }}</span>
             </a>
         </div>
 

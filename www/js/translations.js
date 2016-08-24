@@ -9,6 +9,9 @@ var TRANSLATIONS = {
         
         "track.start": "Start new track",
         "track.stop": "Stop",
+        "track.save": "Save",
+        "track.title" : "Track title",
+        "track.notes" : "Track notes",
         "track.point_no": "Point #{{ id }}",
         "track.longitude": "Longitude",
         "track.latitude": "Latitude",
@@ -28,8 +31,11 @@ var TRANSLATIONS = {
         "nav.history": "История",
         "nav.settings" : "Настройки",
         
-        "track.start": "Нов запис",
+        "track.start": "Нов маршрут",
         "track.stop": "Стоп",
+        "track.save": "Запази",
+        "track.title" : "Име на маршрута",
+        "track.notes" : "Бележки",        
         "track.point_no": "Точка №{{ id }}",
         "track.longitude": "Геогр. дълж.",
         "track.latitude": "Геогр. шир.",

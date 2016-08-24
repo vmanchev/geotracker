@@ -3,27 +3,53 @@
 
         <div class="row">
             <div class="col text-center">
-                <button class="button button-positive button-full" data-ng-click="startTracking();" data-ng-show="!isTracking">{{ "track.start" | translate }}</button>
+                <button class="button button-positive button-full" data-ng-click="startTracking();" data-ng-show="!isTracking && !readyToSave">{{ "track.start" | translate }}</button>
                 <button class="button button-assertive button-full" data-ng-click="stopTracking();" data-ng-show="isTracking">{{ "track.stop" | translate }}</button>
             </div>
         </div>
 
         <div class="row">
-            <div class="col" id="map"></div>
+            <div class="col">
+                <div id="map"></div>
+            </div>
+        </div>
+
+        <div class="row" data-ng-show="readyToSave">
+            <div class="col">
+                
+                <div class="list">
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">{{ 'track.title' | translate }}</span>
+                        <input type="text" placeholder="{{ 'track.title' | translate }}" data-ng-model="trackInfo.title">
+                    </label>
+                </div>
+
+                <div class="list">
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">{{ 'track.notes' | translate }}</span>
+                        <textarea placeholder="{{ 'track.notes' | translate }}" data-ng-model="trackInfo.notes" rows="2"></textarea>
+                    </label>
+                </div>
+                
+            </div>
         </div>
         
-        
-        
+        <div class="row" data-ng-show="readyToSave">
+            <div class="col text-center">
+                <button class="button button-positive button-full" data-ng-click="saveHistory();">{{ "track.save" | translate }}</button>
+            </div>
+        </div>
+
         <div class="card" data-ng-repeat="point in points track by $index">
             <div class="item item-divider">
                 {{ "track.point_no" | translate : {id: $index+1} }}
             </div>
             <div class="item item-text-wrap">
-                {{ "track.longitude" | translate }}: {{ point.coords.longitude }}<br />
-                {{ "track.latitude" | translate }}: {{ point.coords.latitude }}<br />
-                {{ "track.altitude" | translate }}: {{ point.coords.altitude }}<br />
-                {{ "track.direction" | translate }}: {{ point.coords.heading }}<br />
-                {{ "track.speed" | translate }}: {{ point.coords.speed }}<br />
+                {{ "track.longitude" | translate }}: {{ point.coords.longitude}}<br />
+                {{ "track.latitude" | translate }}: {{ point.coords.latitude}}<br />
+                {{ "track.altitude" | translate }}: {{ point.coords.altitude}}<br />
+                {{ "track.direction" | translate }}: {{ point.coords.heading}}<br />
+                {{ "track.speed" | translate }}: {{ point.coords.speed}}<br />
             </div>
             <div class="item item-divider">
                 {{ point.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}
