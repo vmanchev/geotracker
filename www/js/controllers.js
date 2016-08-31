@@ -4,7 +4,7 @@ angular.module('starter.controllers', [])
 
         })
 
-        .controller('TrackController', function ($scope, $cordovaGeolocation) {
+        .controller('TrackController', function ($scope, $timeout, $cordovaGeolocation) {
             //has tracking been started or not
             $scope.isTracking = false;
             $scope.readyToSave = false;
@@ -75,8 +75,11 @@ angular.module('starter.controllers', [])
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
 
-                $scope.map = new google.maps.Map
-                        (document.getElementById("map"), mapOptions);
+                $timeout(function () {
+                    $scope.map = new google.maps.Map
+                            (document.getElementById("map"), mapOptions);
+                });
+
             }
 
             //display position on the map
@@ -103,10 +106,10 @@ angular.module('starter.controllers', [])
 
                 //remove the html code
                 mapElement.innerHTML = '';
-                
+
                 //remove the inline style
                 mapElement.removeAttribute("style");
-                
+
                 //reset our internal map reference
                 $scope.map = null;
             };
