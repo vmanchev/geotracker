@@ -4,7 +4,7 @@ angular.module('starter.controllers', [])
 
         })
 
-        .controller('TrackController', function ($scope, $timeout, $cordovaGeolocation) {
+        .controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation) {
             //has tracking been started or not
             $scope.isTracking = false;
             $scope.readyToSave = false;
@@ -12,13 +12,19 @@ angular.module('starter.controllers', [])
             //start tracking
             $scope.startTracking = function () {
 
-                $scope.$broadcast('tracking:started');
+                $ionicLoading.show();
 
                 $cordovaGeolocation.getCurrentPosition({
                     timeout: 10000,
                     enableHighAccuracy: true,
                     maximumAge: 3000
-                }).then($scope.positionSuccess, $scope.positionError);
+                }).then(function (locationData) {
+                    $scope.$broadcast('tracking:started');
+                    $scope.positionSuccess(locationData);
+                }, $scope.positionError)
+                .finally(function () {
+                    $ionicLoading.hide();
+                });
             }
 
             /**
@@ -70,16 +76,18 @@ angular.module('starter.controllers', [])
              * Initialize map
              */
             $scope.initMap = function () {
+
+                if (!_.isUndefined($scope.map)) {
+                    return;
+                }
+
                 var mapOptions = {
                     zoom: 1,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
 
-                $timeout(function () {
-                    $scope.map = new google.maps.Map
-                            (document.getElementById("map"), mapOptions);
-                });
-
+                $scope.map = new google.maps.Map
+                        (document.getElementById("map"), mapOptions);
             }
 
             //display position on the map
@@ -130,6 +138,13 @@ angular.module('starter.controllers', [])
                 $scope.$broadcast('tracking:stopped');
             }
 
+            /**
+             * Save the current track to the app history
+             * 
+             * We will call it from the view.
+             * 
+             * @returns {undefined}
+             */
             $scope.saveHistory = function () {
                 var historyTracks = localStorage.getItem("tracks");
 
@@ -154,6 +169,8 @@ angular.module('starter.controllers', [])
 
             $scope.$on('tracking:started', function (event, data) {
 
+                $scope.initMap();
+
                 $scope.isTracking = true;
 
                 //container for geo location points
@@ -168,8 +185,6 @@ angular.module('starter.controllers', [])
                     title: null,
                     notes: null
                 };
-
-                $scope.initMap();
             });
 
             $scope.$on('tracking:stopped', function (event, data) {
@@ -187,7 +202,7 @@ angular.module('starter.controllers', [])
                 $scope.points = [];
                 $scope.readyToSave = false;
 
-
+                $state.go('app.history');
             });
 
         })
