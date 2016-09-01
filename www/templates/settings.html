@@ -4,24 +4,30 @@
         <ul class="list">
 
             <li class="item item-input item-select">
-
                 <div class="input-label">
                     {{ "settings.language" | translate }}
                 </div>
                 <select
-                    data-ng-model="selectedLanguage"
-                    
+                    data-ng-model="selectedLanguage"                    
                     data-ng-options="item.name for item in availableLanguages track by item.id"
                     data-ng-change="setPreferedLanguage(selectedLanguage)">
                 </select>                
-
             </li>
-
-
+            
+            <li class="item item-input">
+                <div class="input-label">
+                    {{ "settings.apikey" | translate }}
+                </div>
+                <input type="text" data-ng-model="settings.apikey">
+            </li>
 
         </ul>
 
-
+        <div class="row">
+            <div class="col text-center">
+                <button class="button button-positive button-full" data-ng-click="saveSettings();">{{ "track.save" | translate }}</button>
+            </div>
+        </div>
 
 
     </ion-content>

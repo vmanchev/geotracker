@@ -6,7 +6,7 @@
 // 'starter.controllers' is found in controllers.js
 var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'pascalprecht.translate'])
 
-        .run(function ($ionicPlatform) {
+        .run(function ($ionicPlatform, $rootScope, SettingsService) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -19,6 +19,38 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                     // org.apache.cordova.statusbar required
                     StatusBar.styleDefault();
                 }
+
+                $rootScope.loadScript = function (url, type, charset) {
+                    if (type === undefined)
+                        type = 'text/javascript';
+                    if (url) {
+                        var script = document.querySelector("script[src*='" + url + "']");
+                        if (!script) {
+                            var heads = document.getElementsByTagName("head");
+                            if (heads && heads.length) {
+                                var head = heads[0];
+                                if (head) {
+                                    script = document.createElement('script');
+                                    script.setAttribute('src', url);
+                                    script.setAttribute('type', type);
+                                    if (charset)
+                                        script.setAttribute('charset', charset);
+                                    head.appendChild(script);
+                                }
+                            }
+                        }
+                        return script;
+                    }
+                };
+
+                $rootScope.$watch('apikey', function(newValue){
+                    $rootScope.loadScript('https://maps.googleapis.com/maps/api/js?key=' + newValue);
+                });
+
+                $rootScope.apikey = SettingsService.get().apikey;
+
+                
+
             });
         })
 
@@ -64,7 +96,7 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                             }
                         }
                     })
-                    
+
                     .state('app.trackedit', {
                         url: '/track/edit/:trackId',
                         cache: false,
@@ -75,7 +107,7 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                             }
                         }
                     })
-                    
+
                     .state('app.settings', {
                         url: '/settings',
                         cache: false,
@@ -86,7 +118,7 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                             }
                         }
                     });
-                    
+
             // if none of the above states are matched, use this as the fallback
             $urlRouterProvider.otherwise('/app/track');
         })
@@ -94,12 +126,12 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
         .config(function ($translateProvider) {
             $translateProvider.translations('en', TRANSLATIONS.en);
             $translateProvider.translations('bg', TRANSLATIONS.bg);
-            
+
             $translateProvider.useSanitizeValueStrategy('escape');
-            
+
             var selectedLanguage = JSON.parse(localStorage.getItem("locale"));
 
             var useLanguage = (!_.isNull(selectedLanguage)) ? selectedLanguage.id : 'bg';
-            
+
             $translateProvider.preferredLanguage(useLanguage);
         });

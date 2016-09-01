@@ -24,6 +24,7 @@ var TRANSLATIONS = {
         "track.edit" : "Edit",
         
         "settings.language" : "Language",
+        "settings.apikey" : "Google API Key",
         
         "dialog.confirm" : "Confirm",
         "dialog.track.confirm" : "Are you sure you want to delete this track?",
@@ -57,6 +58,7 @@ var TRANSLATIONS = {
         "track.edit" : "Редактирай",
         
         "settings.language" : "Език",
+        "settings.apikey" : "Google API Key",
         
         "dialog.confirm" : "Потвърди",
         "dialog.track.confirm" : "Наистина ли искате да изтриете този запис?",

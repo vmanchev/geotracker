@@ -122,31 +122,48 @@ geoApp.factory('TrackStorage', function () {
     return ts;
 
 })
-        .service('I18nService', function ($translate) {
+.service('I18nService', function ($translate) {
 
-            
+    this.getAvailableLanguages = function () {
 
-            this.getAvailableLanguages = function () {
+        var availableLanguages = [];
 
-                var availableLanguages = [];
-
-                //get available languages
-                angular.forEach(TRANSLATIONS, function (keys, id) {
-                    availableLanguages.push({
-                        id: id,
-                        name: keys.name
-                    });
-                });
-
-                return availableLanguages;
-
-            };
-            
-            this.setPreferedLanguage = function(selectedLanguage) {
-                localStorage.setItem("locale", JSON.stringify(selectedLanguage));
-                $translate.use(selectedLanguage.id)
-            }
-
-            
-
+        //get available languages
+        angular.forEach(TRANSLATIONS, function (keys, id) {
+            availableLanguages.push({
+                id: id,
+                name: keys.name
+            });
         });
+
+        return availableLanguages;
+
+    };
+
+    this.setPreferedLanguage = function(selectedLanguage) {
+        localStorage.setItem("locale", JSON.stringify(selectedLanguage));
+        $translate.use(selectedLanguage.id)
+    }            
+
+})
+.service('SettingsService', function ($translate) {
+
+    var defaults = {
+        apikey: "AIzaSyD8JvJ-krHO-x3ZU6It0rf_wOM2hK3KY4k"
+    }
+
+    this.get = function () {
+        return _.defaults(JSON.parse(localStorage.getItem('settings')), defaults);
+    };
+
+    this.set = function(data) {
+        var data = _.omitBy(data, function (value) {
+                        return _.isEmpty(value);
+        });
+
+        data = _.defaults(data, defaults);
+
+        localStorage.setItem("settings", JSON.stringify(data));
+    }            
+
+});
