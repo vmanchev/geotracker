@@ -28,6 +28,9 @@
 
         <div class="row">
             <div class="col text-center">
+                <button class="button button-balanced button-full" ui-sref="app.trackedit({trackId: track.trackId})">{{ "track.edit" | translate }}</button>
+            </div>            
+            <div class="col text-center">
                 <button class="button button-assertive button-full" data-ng-click="deleteTrack();">{{ "track.delete" | translate }}</button>
             </div>
         </div>

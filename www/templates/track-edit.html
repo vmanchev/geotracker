@@ -1,0 +1,32 @@
+<ion-view view-title="{{ 'nav.edit' | translate }}">
+    <ion-content>
+
+        <div class="row">
+            <div class="col">
+                
+                <div class="list">
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">{{ 'track.title' | translate }}</span>
+                        <input type="text" placeholder="{{ 'track.title' | translate }}" data-ng-model="track.info.title">
+                    </label>
+                </div>
+
+                <div class="list">
+                    <label class="item item-input item-floating-label">
+                        <span class="input-label">{{ 'track.notes' | translate }}</span>
+                        <textarea placeholder="{{ 'track.notes' | translate }}" data-ng-model="track.info.notes" rows="2"></textarea>
+                    </label>
+                </div>
+                
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col text-center">
+                <button class="button button-positive button-full" data-ng-click="updateTrack();">{{ "track.save" | translate }}</button>
+            </div>
+        </div>
+
+    </ion-content>
+</ion-view>
+

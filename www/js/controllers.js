@@ -4,7 +4,7 @@ angular.module('starter.controllers', [])
 
         })
 
-        .controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation) {
+        .controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation, TrackStorage) {
             //has tracking been started or not
             $scope.isTracking = false;
             $scope.readyToSave = false;
@@ -146,23 +146,16 @@ angular.module('starter.controllers', [])
              * @returns {undefined}
              */
             $scope.saveHistory = function () {
-                var historyTracks = localStorage.getItem("tracks");
 
-                if (!historyTracks) {
-                    historyTracks = [];
-                } else {
-                    historyTracks = JSON.parse(historyTracks);
-                }
-
-                historyTracks.push({
+                var track = {
                     trackId: $scope.trackId,
                     points: $scope.points,
-                    info: _.omitBy($scope.trackInfo, function (value, key) {
+                    info: _.omitBy($scope.trackInfo, function (value) {
                         return _.isEmpty(value);
                     })
-                });
+                };
 
-                localStorage.setItem("tracks", JSON.stringify(historyTracks));
+                TrackStorage.save(track);
 
                 $scope.$broadcast('tracking:saved');
             }
@@ -207,31 +200,32 @@ angular.module('starter.controllers', [])
 
         })
 
-        .controller('HistoryController', function ($scope) {
-
-            var items = localStorage.getItem('tracks');
-
-            if (!items) {
-                $scope.items = [];
-            } else {
-                $scope.items = JSON.parse(items);
-            }
-
+        .controller('HistoryController', function ($scope, TrackStorage) {
+            $scope.items = TrackStorage.getAll();
         })
 
-        .controller('TrackViewController', function ($scope, $state, $stateParams) {
+        .controller('TrackViewController', function ($scope, $state, $stateParams, TrackStorage) {
 
-            var tracks = JSON.parse(localStorage.getItem('tracks'));
-
-            $scope.track = _.find(tracks, {trackId: parseInt($stateParams.trackId)});
+            $scope.track = TrackStorage.getById($stateParams.trackId);
 
             //@todo - needs a confirmation dialog
             $scope.deleteTrack = function () {
-                _.pull(tracks, $scope.track);
-                localStorage.setItem("tracks", JSON.stringify(tracks));
+                TrackStorage.delete($scope.track);
                 $state.go('app.history');
             }
         })
+        
+        .controller('TrackEditController', function ($scope, $state, $stateParams, TrackStorage) {
+
+            $scope.track = TrackStorage.getById($stateParams.trackId);
+
+            $scope.updateTrack = function(){
+                TrackStorage.save($scope.track);
+                $state.go('app.trackview', $stateParams);
+            }
+
+        })
+        
 
         .controller('SettingsController', function ($scope, $translate, $timeout) {
 

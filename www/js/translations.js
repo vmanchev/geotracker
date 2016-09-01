@@ -6,6 +6,7 @@ var TRANSLATIONS = {
         "nav.home": "Home",
         "nav.history": "History",
         "nav.settings" : "Settings",
+        "nav.edit" : "Edit",
         
         "track.start": "Start new track",
         "track.stop": "Stop",
@@ -19,7 +20,8 @@ var TRANSLATIONS = {
         "track.direction": "Heading",
         "track.speed": "Speed",
         "track.details": "Details",
-        "track.delete" : "Delete this track",
+        "track.delete" : "Delete",
+        "track.edit" : "Edit",
         
         "settings.language" : "Language"
     },
@@ -30,6 +32,7 @@ var TRANSLATIONS = {
         "nav.home": "Начало",
         "nav.history": "История",
         "nav.settings" : "Настройки",
+        "nav.edit" : "Редактирай",
         
         "track.start": "Нов маршрут",
         "track.stop": "Стоп",
@@ -44,6 +47,7 @@ var TRANSLATIONS = {
         "track.speed": "Скорост",
         "track.details": "Детайли",
         "track.delete" : "Изтрий",
+        "track.edit" : "Редактирай",
         
         "settings.language" : "Език"
     }
