@@ -59,19 +59,19 @@ geoApp.factory('TrackStorage', function () {
     ts.save = function (track) {
 
         var tracks = ts.getAll();
-        
+
         var query = {trackId: track.trackId};
 
         var isExisting = (_.find(tracks, query)) ? true : false;
 
         if (_.isEmpty(tracks)) {
             tracks.push(track);
-        }else if(!_.isEmpty(tracks) && !isExisting ){
+        } else if (!_.isEmpty(tracks) && !isExisting) {
             tracks.push(track);
-        }else if(!_.isEmpty(tracks) && isExisting ){
-            
+        } else if (!_.isEmpty(tracks) && isExisting) {
+
             var idx = _.findIndex(tracks, query);
-            
+
             tracks[idx] = track;
         }
 
@@ -96,7 +96,7 @@ geoApp.factory('TrackStorage', function () {
 
         _set(tracks);
     };
-    
+
     /**
      * Write to local storage
      * 
@@ -104,10 +104,10 @@ geoApp.factory('TrackStorage', function () {
      * 
      * @param {object} value Object to be serialized and written as JSON string
      */
-    var _set = function(value){
+    var _set = function (value) {
         localStorage.setItem(key, JSON.stringify(value));
     };
-    
+
     /**
      * Read from local storage
      * 
@@ -115,10 +115,38 @@ geoApp.factory('TrackStorage', function () {
      * 
      * @returns {DOMString}
      */
-    var _get = function(){
+    var _get = function () {
         return localStorage.getItem(key);
     };
 
     return ts;
 
-});
+})
+        .service('I18nService', function ($translate) {
+
+            
+
+            this.getAvailableLanguages = function () {
+
+                var availableLanguages = [];
+
+                //get available languages
+                angular.forEach(TRANSLATIONS, function (keys, id) {
+                    availableLanguages.push({
+                        id: id,
+                        name: keys.name
+                    });
+                });
+
+                return availableLanguages;
+
+            };
+            
+            this.setPreferedLanguage = function(selectedLanguage) {
+                localStorage.setItem("locale", JSON.stringify(selectedLanguage));
+                $translate.use(selectedLanguage.id)
+            }
+
+            
+
+        });

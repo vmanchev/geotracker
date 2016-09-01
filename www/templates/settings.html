@@ -11,7 +11,7 @@
                 <select
                     data-ng-model="selectedLanguage"
                     
-                    data-ng-options="item.name for item in availableLanguages"
+                    data-ng-options="item.name for item in availableLanguages track by item.id"
                     data-ng-change="setPreferedLanguage(selectedLanguage)">
                 </select>                
 

@@ -22,9 +22,9 @@ angular.module('starter.controllers', [])
                     $scope.$broadcast('tracking:started');
                     $scope.positionSuccess(locationData);
                 }, $scope.positionError)
-                .finally(function () {
-                    $ionicLoading.hide();
-                });
+                        .finally(function () {
+                            $ionicLoading.hide();
+                        });
             }
 
             /**
@@ -214,39 +214,30 @@ angular.module('starter.controllers', [])
                 $state.go('app.history');
             }
         })
-        
+
         .controller('TrackEditController', function ($scope, $state, $stateParams, TrackStorage) {
 
             $scope.track = TrackStorage.getById($stateParams.trackId);
 
-            $scope.updateTrack = function(){
+            $scope.updateTrack = function () {
                 TrackStorage.save($scope.track);
                 $state.go('app.trackview', $stateParams);
             }
 
         })
-        
-
-        .controller('SettingsController', function ($scope, $translate, $timeout) {
 
 
-            $scope.availableLanguages = [];
+        .controller('SettingsController', function ($scope, $translate, $timeout, I18nService) {
 
-            //get available languages
-            angular.forEach(TRANSLATIONS, function (keys, id) {
-                $scope.availableLanguages.push({
-                    id: id,
-                    name: keys.name
-                });
-            });
 
-            $timeout(function () {
-                $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
-            });
+            $scope.availableLanguages = I18nService.getAvailableLanguages();
+
+            $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
+            console.log($scope.availableLanguages, $scope.selectedLanguage)
+
 
             $scope.setPreferedLanguage = function (selectedLanguage) {
-                localStorage.setItem("locale", JSON.stringify(selectedLanguage));
-                $translate.use(selectedLanguage.id)
+                I18nService.setPreferedLanguage(selectedLanguage);
             }
 
         });
