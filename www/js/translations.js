@@ -23,7 +23,14 @@ var TRANSLATIONS = {
         "track.delete" : "Delete",
         "track.edit" : "Edit",
         
-        "settings.language" : "Language"
+        "settings.language" : "Language",
+        
+        "dialog.confirm" : "Confirm",
+        "dialog.track.confirm" : "Are you sure you want to delete this track?",
+        
+        "common.yes" : "Yes",
+        "common.no" : "No",
+        "common.cancel" : "Cancel"
     },
     "bg": {
         "name" : "Български",
@@ -49,6 +56,13 @@ var TRANSLATIONS = {
         "track.delete" : "Изтрий",
         "track.edit" : "Редактирай",
         
-        "settings.language" : "Език"
+        "settings.language" : "Език",
+        
+        "dialog.confirm" : "Потвърди",
+        "dialog.track.confirm" : "Наистина ли искате да изтриете този запис?",
+        
+        "common.yes" : "Да",
+        "common.no" : "Не",
+        "common.cancel" : "Откажи"
     }
 };

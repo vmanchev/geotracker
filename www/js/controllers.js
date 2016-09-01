@@ -204,9 +204,27 @@ angular.module('starter.controllers', [])
             $scope.items = TrackStorage.getAll();
         })
 
-        .controller('TrackViewController', function ($scope, $state, $stateParams, TrackStorage) {
+        .controller('TrackViewController', function ($scope, $state, $stateParams, $ionicPopup, $translate, TrackStorage) {
 
             $scope.track = TrackStorage.getById($stateParams.trackId);
+
+            $scope.confirmDelete = function () {
+                var confirmPopup = $ionicPopup.confirm({
+                    title: $translate.instant("dialog.confirm"),
+                    template: $translate.instant("dialog.track.confirm"),
+                    cancelText: $translate.instant("common.cancel"),
+                    cancelType: 'button-positive',
+                    okText: $translate.instant("common.yes"),
+                    okType: 'button-default'
+                });
+
+                confirmPopup.then(function (res) {
+                    if (res) {
+                        $scope.deleteTrack();
+                    } 
+                });
+            };
+
 
             //@todo - needs a confirmation dialog
             $scope.deleteTrack = function () {
@@ -229,12 +247,9 @@ angular.module('starter.controllers', [])
 
         .controller('SettingsController', function ($scope, $translate, $timeout, I18nService) {
 
-
             $scope.availableLanguages = I18nService.getAvailableLanguages();
 
             $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
-            console.log($scope.availableLanguages, $scope.selectedLanguage)
-
 
             $scope.setPreferedLanguage = function (selectedLanguage) {
                 I18nService.setPreferedLanguage(selectedLanguage);
