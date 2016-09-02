@@ -1,4 +1,4 @@
-geoApp.factory('TrackStorage', function () {
+geoApp.factory('TrackStorage', function ($translate) {
 
     /**
      * Key name to store the tracks under in localStorage
@@ -24,7 +24,7 @@ geoApp.factory('TrackStorage', function () {
 
         var serializedTracks = _get();
 
-        return (_.isUndefined(serializedTracks)) ? [] : JSON.parse(serializedTracks);
+        return (_.isNull(serializedTracks)) ? [] : JSON.parse(serializedTracks);
     };
 
     /**
@@ -95,6 +95,11 @@ geoApp.factory('TrackStorage', function () {
         });
 
         _set(tracks);
+    };
+
+    ts.formatDuration = function(duration){
+      return moment.duration(duration, "seconds")
+              .format("Y ["+$translate.instant('time.year')+"], M ["+$translate.instant('time.month')+"], D ["+$translate.instant('time.day')+"], h ["+$translate.instant('time.hour')+"], m ["+$translate.instant('time.minute')+"], s ["+$translate.instant('time.second')+"]");  
     };
 
     /**

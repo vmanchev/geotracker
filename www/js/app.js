@@ -49,7 +49,6 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
 
                 $rootScope.apikey = SettingsService.get().apikey;
 
-                
 
             });
         })

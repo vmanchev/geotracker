@@ -22,6 +22,10 @@ var TRANSLATIONS = {
         "track.details": "Details",
         "track.delete" : "Delete",
         "track.edit" : "Edit",
+        "track.startTime" : "Start",
+        "track.endTime" : "End",
+        "track.duration" : "Duration",
+        
         
         "settings.language" : "Language",
         "settings.apikey" : "Google API Key",
@@ -31,7 +35,14 @@ var TRANSLATIONS = {
         
         "common.yes" : "Yes",
         "common.no" : "No",
-        "common.cancel" : "Cancel"
+        "common.cancel" : "Cancel",
+        
+        "time.year" : "year(s)",
+        "time.month" : "month(s)",
+        "time.day" : "day(s)",
+        "time.hour" : "hour(s)",
+        "time.minute" : "minute(s)",
+        "time.second" : "second(s)"
     },
     "bg": {
         "name" : "Български",
@@ -41,6 +52,9 @@ var TRANSLATIONS = {
         "nav.history": "История",
         "nav.settings" : "Настройки",
         "nav.edit" : "Редактирай",
+        "track.startTime" : "Начало",
+        "track.endTime" : "Край",
+        "track.duration" : "Време",
         
         "track.start": "Нов маршрут",
         "track.stop": "Стоп",
@@ -65,6 +79,13 @@ var TRANSLATIONS = {
         
         "common.yes" : "Да",
         "common.no" : "Не",
-        "common.cancel" : "Откажи"
+        "common.cancel" : "Откажи",
+        
+        "time.year" : "г.",
+        "time.month" : "мес.",
+        "time.day" : "дн.",
+        "time.hour" : "ч.",
+        "time.minute" : "мин.",
+        "time.second" : "сек."
     }
 };

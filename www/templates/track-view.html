@@ -8,23 +8,26 @@
             </div>
         </div>
 
-        <div class="card" data-ng-repeat="point in track.points track by $index">
-            <div class="item item-divider">
-                {{ "track.point_no" | translate : {id: $index+1} }}
-            </div>
-            <div class="item item-text-wrap">
-                {{ "track.longitude" | translate }}: {{ point.coords.longitude}}<br />
-                {{ "track.latitude" | translate }}: {{ point.coords.latitude}}<br />
-                {{ "track.altitude" | translate }}: {{ point.coords.altitude}}<br />
-                {{ "track.direction" | translate }}: {{ point.coords.heading}}<br />
-                {{ "track.speed" | translate }}: {{ point.coords.speed}}<br />
-            </div>
-            <div class="item item-divider">
-                {{ point.timestamp | date : 'dd/MM/yyyy HH:mm:ss' }}
+        <div class="card">
+
+            <div class="item item-text-wrap">        
+
+                <div class="row">
+                    <div class="col col-25">{{ "track.startTime" | translate }}:</div>
+                    <div class="col col-75">{{ track.startTime | date : "dd.MM.yyyy HH:mm:ss" }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-25">{{ "track.endTime" | translate }}:</div>
+                    <div class="col col-75">{{ track.endTime | date : "dd.MM.yyyy HH:mm:ss" }}</div>
+                </div>
+
+                <div class="row">
+                    <div class="col col-25">{{ "track.duration" | translate }}:</div>
+                    <div class="col col-75">{{ formattedDuration}}</div>
+                </div>
             </div>
         </div>
-
-
 
         <div class="row">
             <div class="col text-center">

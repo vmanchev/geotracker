@@ -4,13 +4,15 @@ angular.module('starter.controllers', [])
 
         })
 
-        .controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation, TrackStorage) {
+        .controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation, $translate, TrackStorage) {
             //has tracking been started or not
             $scope.isTracking = false;
             $scope.readyToSave = false;
 
             //start tracking
             $scope.startTracking = function () {
+
+                $scope.startTime = new Date();
 
                 $ionicLoading.show();
 
@@ -132,6 +134,7 @@ angular.module('starter.controllers', [])
              * @returns {undefined}
              */
             $scope.stopTracking = function () {
+                $scope.endTime = new Date();              
                 $scope.isTracking = false;
                 $scope.trackWatch.clearWatch();
 
@@ -152,7 +155,10 @@ angular.module('starter.controllers', [])
                     points: $scope.points,
                     info: _.omitBy($scope.trackInfo, function (value) {
                         return _.isEmpty(value);
-                    })
+                    }),
+                    startTime: $scope.startTime,
+                    endTime: $scope.endTime,
+                    duration: moment($scope.endTime).diff(moment($scope.startTime), "seconds")
                 };
 
                 TrackStorage.save(track);
@@ -207,6 +213,8 @@ angular.module('starter.controllers', [])
         .controller('TrackViewController', function ($scope, $state, $stateParams, $ionicPopup, $translate, TrackStorage) {
 
             $scope.track = TrackStorage.getById($stateParams.trackId);
+
+            $scope.formattedDuration = TrackStorage.formatDuration($scope.track.duration);
 
             $scope.confirmDelete = function () {
                 var confirmPopup = $ionicPopup.confirm({
