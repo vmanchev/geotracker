@@ -111,14 +111,13 @@ geoApp.factory('TrackStorage', function ($translate) {
      * @returns {array} Array of objects with two keys - lat and lng
      */
     ts.getPolylinePoints = function(points){
-        console.log(114, points)
+
         var filtered = [];
         
         angular.forEach(points, function(point){
-            console.log(118, point)
             this.push({lat: point.coords.latitude, lng: point.coords.longitude});
         }, filtered);
-console.log(121, filtered)        
+
         return filtered;
     }
 
