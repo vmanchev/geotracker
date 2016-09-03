@@ -1,12 +1,6 @@
-// Ionic Starter App
+var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers', 'ngCordova', 'pascalprecht.translate'])
 
-// angular.module is a global place for creating, registering and retrieving Angular modules
-// 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
-// the 2nd parameter is an array of 'requires'
-// 'starter.controllers' is found in controllers.js
-var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordova', 'pascalprecht.translate'])
-
-        .run(function ($ionicPlatform, $rootScope, SettingsService) {
+        .run(function ($ionicPlatform, $rootScope, $timeout, SettingsService) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -43,12 +37,50 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                     }
                 };
 
-                $rootScope.$watch('apikey', function(newValue){
+                $rootScope.$watch('apikey', function (newValue) {
                     $rootScope.loadScript('https://maps.googleapis.com/maps/api/js?key=' + newValue);
                 });
 
                 $rootScope.apikey = SettingsService.get().apikey;
 
+
+                // Find matches
+                var mql = window.matchMedia("(orientation: portrait)");
+
+                // If there are matches, we're in portrait
+                if (mql.matches) {
+                    // Portrait orientation
+                } else {
+                    // Landscape orientation
+                }
+
+                // Add a media query change listener
+                mql.addListener(function (m) {
+                    if (m.matches) {
+                        /**
+                         * Changed to portrait
+                         * 
+                         * This is the app default orientation. Google Map should 
+                         * be displayed with its initial height.
+                         */
+                        $timeout(function () {
+                            angular.element(document.getElementById('map')).css('height', 'initial');
+                            google.maps.event.trigger($rootScope.map, 'resize');
+                        });
+                    } else {
+                        /**
+                         * Changed to landscape
+                         * 
+                         * Change Google Map container height by using the device 
+                         * screen height and mapScreenScale, which is defined on 
+                         * per controller basis. 
+                         */
+                        $timeout(function () {
+                            angular.element(document.getElementById('map')).css('height', (screen.height * $rootScope.mapScreenScale) + 'px');
+                            google.maps.event.trigger($rootScope.map, 'resize');
+                        });
+                    }
+                });
 
             });
         })
@@ -88,6 +120,11 @@ var geoApp = angular.module('starter', ['ionic', 'starter.controllers', 'ngCordo
                     .state('app.trackview', {
                         url: '/track/:trackId',
                         cache: false,
+                        resolve: {
+                            track: function ($stateParams, TrackStorage) {
+                                return TrackStorage.getById($stateParams.trackId);
+                            }
+                        },
                         views: {
                             'menuContent': {
                                 templateUrl: 'templates/track-view.html',

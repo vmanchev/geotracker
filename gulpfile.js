@@ -18,7 +18,7 @@ var paths = {
 
 gulp.task('serve:before', ['default', 'watch']);
 
-gulp.task('default', ['sass', 'app-scripts', 'bower-fonts']);
+gulp.task('default', ['sass', 'main-bower-files', 'app-scripts', 'bower-fonts']);
 
 gulp.task('sass', function (done) {
     gulp.src('./scss/**/*')
@@ -56,7 +56,7 @@ gulp.task('bower-fonts', function () {
 });
 
 
-gulp.task('app-scripts', ['main-bower-files'], function (cb) {
+gulp.task('app-scripts', function (cb) {
     return gulp.src(['./app/**/*'])
             .pipe(concat('app.min.js'))
             .pipe(ngAnnotate({single_quotes: true}))

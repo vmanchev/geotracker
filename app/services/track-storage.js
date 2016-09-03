@@ -103,6 +103,26 @@ geoApp.factory('TrackStorage', function ($translate) {
     };
 
     /**
+     * Get track points
+     * 
+     * Loop over the track points and transform it to the format, required 
+     * by Google Maps for Polyline
+     * 
+     * @returns {array} Array of objects with two keys - lat and lng
+     */
+    ts.getPolylinePoints = function(points){
+        console.log(114, points)
+        var filtered = [];
+        
+        angular.forEach(points, function(point){
+            console.log(118, point)
+            this.push({lat: point.coords.latitude, lng: point.coords.longitude});
+        }, filtered);
+console.log(121, filtered)        
+        return filtered;
+    }
+
+    /**
      * Write to local storage
      * 
      * Private method to write data to the local storage under the service key.

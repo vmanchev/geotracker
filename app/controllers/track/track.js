@@ -1,7 +1,10 @@
-ctrl.controller('TrackController', function ($scope, $state, $ionicLoading, $cordovaGeolocation, $translate, TrackStorage) {
+ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, TrackStorage) {
             //has tracking been started or not
             $scope.isTracking = false;
             $scope.readyToSave = false;
+
+            //map scale ratio, see app.js
+            $rootScope.mapScreenScale = 0.8;
 
             //start tracking
             $scope.startTracking = function () {
@@ -35,6 +38,19 @@ ctrl.controller('TrackController', function ($scope, $state, $ionicLoading, $cor
 
                 //add the new point to the array of points
                 $scope.points.push(data);
+                
+                /**
+                 * @bug Coordinates object, provided by the browsers, can not be 
+                 * serialized. During the development process, I can not get 
+                 * any coordinates into the storage.
+                 */
+//                $scope.points.push({
+//                    timestamp: data.timestamp,
+//                    coords: {
+//                        latitude: data.coords.latitude,
+//                        longitude: data.coords.longitude
+//                    }
+//                });
 
                 //if watcher hasn't been started yet, start it now
                 if (!$scope.trackWatch) {
@@ -73,23 +89,23 @@ ctrl.controller('TrackController', function ($scope, $state, $ionicLoading, $cor
              */
             $scope.initMap = function () {
 
-                if (!_.isUndefined($scope.map)) {
+                if (!_.isUndefined($rootScope.map)) {
                     return;
                 }
 
                 var mapOptions = {
-                    zoom: 1,
+                    zoom: 15,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
 
-                $scope.map = new google.maps.Map
+                $rootScope.map = new google.maps.Map
                         (document.getElementById("map"), mapOptions);
             }
 
             //display position on the map
             $scope.updateMap = function (latitude, longitude) {
 
-                if (angular.isUndefined($scope.map)) {
+                if (angular.isUndefined($rootScope.map)) {
                     $scope.initMap();
                 }
 
@@ -99,9 +115,8 @@ ctrl.controller('TrackController', function ($scope, $state, $ionicLoading, $cor
                     position: latLong
                 });
 
-                marker.setMap($scope.map);
-                $scope.map.setZoom(15);
-                $scope.map.setCenter(marker.getPosition());
+                marker.setMap($rootScope.map);
+                $rootScope.map.setCenter(marker.getPosition());
             }
 
             $scope.resetMap = function () {
@@ -115,7 +130,7 @@ ctrl.controller('TrackController', function ($scope, $state, $ionicLoading, $cor
                 mapElement.removeAttribute("style");
 
                 //reset our internal map reference
-                $scope.map = null;
+                $rootScope.map = null;
             };
 
             /**
