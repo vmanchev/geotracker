@@ -6,46 +6,85 @@ var sass = require('gulp-sass');
 var minifyCss = require('gulp-minify-css');
 var rename = require('gulp-rename');
 var sh = require('shelljs');
+var uglify = require('gulp-uglify');
+var ngAnnotate = require('gulp-ng-annotate');
+var mainBowerFiles = require('gulp-main-bower-files');
+var gulpFilter = require('gulp-filter');
 
 var paths = {
-  sass: ['./scss/**/*.scss']
+    sass: ['./scss/**/*.scss'],
+    appjs: ['./app/**/*.js']
 };
 
-gulp.task('default', ['sass']);
+gulp.task('serve:before', ['default', 'watch']);
 
-gulp.task('sass', function(done) {
-  gulp.src('./scss/ionic.app.scss')
-    .pipe(sass())
-    .on('error', sass.logError)
-    .pipe(gulp.dest('./www/css/'))
-    .pipe(minifyCss({
-      keepSpecialComments: 0
-    }))
-    .pipe(rename({ extname: '.min.css' }))
-    .pipe(gulp.dest('./www/css/'))
-    .on('end', done);
+gulp.task('default', ['sass', 'app-scripts', 'bower-fonts']);
+
+gulp.task('sass', function (done) {
+    gulp.src('./scss/**/*')
+            .pipe(concat('style.min.css'))
+            .pipe(sass())
+            .on('error', sass.logError)
+            .pipe(minifyCss({
+                keepSpecialComments: 0
+            }))
+            .pipe(gulp.dest('./www/css/'))
+            .on('end', done);
 });
 
-gulp.task('watch', function() {
-  gulp.watch(paths.sass, ['sass']);
+gulp.task('main-bower-files', function () {
+
+    var filterJS = gulpFilter('**/*.js', {restore: true});
+
+    return gulp.src('./bower.json')
+            .pipe(mainBowerFiles())
+            .pipe(filterJS)
+            .pipe(concat('bower-files.min.js'))
+            .pipe(ngAnnotate({single_quotes: true}))
+            .pipe(uglify())
+            .pipe(gulp.dest('./www/js'));
 });
 
-gulp.task('install', ['git-check'], function() {
-  return bower.commands.install()
-    .on('log', function(data) {
-      gutil.log('bower', gutil.colors.cyan(data.id), data.message);
-    });
+gulp.task('bower-fonts', function () {
+
+    var filterFonts = gulpFilter(['**/*.eot', '**/*.svg', '**/*.ttf', '**/*.woff'], {restore: true});
+
+    return gulp.src('./bower.json')
+            .pipe(mainBowerFiles())
+            .pipe(filterFonts)
+            .pipe(gulp.dest('./www/css/fonts'));
 });
 
-gulp.task('git-check', function(done) {
-  if (!sh.which('git')) {
-    console.log(
-      '  ' + gutil.colors.red('Git is not installed.'),
-      '\n  Git, the version control system, is required to download Ionic.',
-      '\n  Download git here:', gutil.colors.cyan('http://git-scm.com/downloads') + '.',
-      '\n  Once git is installed, run \'' + gutil.colors.cyan('gulp install') + '\' again.'
-    );
-    process.exit(1);
-  }
-  done();
+
+gulp.task('app-scripts', ['main-bower-files'], function (cb) {
+    return gulp.src(['./app/**/*'])
+            .pipe(concat('app.min.js'))
+            .pipe(ngAnnotate({single_quotes: true}))
+            .pipe(uglify())
+            .pipe(gulp.dest('./www/js/'));
+});
+
+gulp.task('watch', function () {
+    gulp.watch(paths.sass, ['sass']);
+    gulp.watch(paths.appjs, ['app-scripts']);
+});
+
+gulp.task('install', ['git-check'], function () {
+    return bower.commands.install()
+            .on('log', function (data) {
+                gutil.log('bower', gutil.colors.cyan(data.id), data.message);
+            });
+});
+
+gulp.task('git-check', function (done) {
+    if (!sh.which('git')) {
+        console.log(
+                '  ' + gutil.colors.red('Git is not installed.'),
+                '\n  Git, the version control system, is required to download Ionic.',
+                '\n  Download git here:', gutil.colors.cyan('http://git-scm.com/downloads') + '.',
+                '\n  Once git is installed, run \'' + gutil.colors.cyan('gulp install') + '\' again.'
+                );
+        process.exit(1);
+    }
+    done();
 });

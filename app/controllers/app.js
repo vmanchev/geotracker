@@ -1,0 +1,1 @@
+ctrl.controller('AppCtrl', function () {});
