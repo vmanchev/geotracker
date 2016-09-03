@@ -76,11 +76,20 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
     $scope.watchTracking = function () {
 
         $scope.trackWatch = $cordovaGeolocation.watchPosition({
-            timeout: 3000,
-            enableHighAccuracy: false // may cause errors if true
+            timeout: 30000,
+            frequency: 10000,
+            enableHighAccuracy: true // may cause errors if true
         });
 
-        $scope.trackWatch.then(null, $scope.positionError, $scope.positionSuccess);
+        $scope.trackWatch.then(null, function(error){
+
+            $scope.positionError(error);
+            
+            //restarting the watcher
+            $scope.trackWatch.clearWatch();
+            $scope.watchTracking();
+            
+        }, $scope.positionSuccess);
 
     }
 

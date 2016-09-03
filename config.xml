@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<widget id="digital.toxic.geotracker" version="0.0.13" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="digital.toxic.geotracker" version="0.0.16" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
   <name>Geotrack</name>
   <description>
         Route tracking app
@@ -39,6 +39,7 @@
   <plugin name="cordova-plugin-statusbar" spec="~2.1.3"/>
   <plugin name="cordova-plugin-splashscreen" spec="~3.2.2"/>
   <plugin name="cordova-plugin-geolocation"/>
+  <plugin name="cordova-plugin-console"/>
   <plugin name="ionic-plugin-keyboard" source="npm"/>
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
