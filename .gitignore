@@ -7,6 +7,6 @@ platforms/
 plugins/
 nbproject/
 builds/
-
+.idea/
 
 /www/lib/
