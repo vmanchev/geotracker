@@ -2,7 +2,7 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
 
     var ms = {};
 
-    ms.initMap = function (selector) {
+    ms.initMap = function (selector, options) {
 
         var deferred = $q.defer();
 
@@ -10,6 +10,18 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
+
+        //@bug a bit of inconsistency
+        if(options && options.point){
+            
+            if(options.point.lat && options.point.lng){ //view track
+                mapOptions.center = {lat: options.point.lat, lng: options.point.lng};
+            }else if(options.point.latitude && options.point.longitude){    //new track
+                mapOptions.center = {lat: options.point.latitude, lng: options.point.longitude};
+            }
+            
+            
+        }
 
         $timeout(function () {
             deferred.resolve(
@@ -73,6 +85,36 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
 
         //reset our internal map reference
         map = null;
+
+        return map;
+    };
+
+    ms.addPolyline = function (map, points) {
+
+        // Define a symbol using SVG path notation, with an opacity of 1.
+        var lineSymbol = {
+            path: google.maps.SymbolPath.CIRCLE,
+            strokeOpacity: 1,
+            strokeWeight: 2,
+            scale: 4,
+            strokeColor: "#990000",
+            fillColor: '#ffffff',
+            fillOpacity: 1
+        };
+
+        // Create the polyline, passing the symbol in the 'icons' property.
+        // Give the line an opacity of 0.
+        // Repeat the symbol at intervals of 20 pixels to create the dashed effect.
+        new google.maps.Polyline({
+            path: points,
+            strokeOpacity: 0,
+            icons: [{
+                    icon: lineSymbol,
+                    offset: '0',
+                    repeat: '20px'
+                }],
+            map: map
+        });
 
         return map;
     }

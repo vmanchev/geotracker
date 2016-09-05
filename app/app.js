@@ -16,7 +16,7 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
 
                 $rootScope.apikey = SettingsService.get().apikey;
 
-                $rootScope.$on('locale-changed', function(event, locale){
+                $rootScope.$on('locale-changed', function (event, locale) {
                     $translate.use(locale.id);
                 });
 
@@ -60,9 +60,9 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
             });
         })
         .provider('settingsService', function settingsServiceProvider() {
-            this.$get = function() {
+            this.$get = function () {
                 return new SettingsService();
-            };            
+            };
             return this;
         })
         .config(function ($stateProvider, $urlRouterProvider) {
@@ -78,6 +78,11 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                     .state('app.track', {
                         url: '/track',
                         cache: false,
+                        resolve: {
+                            requiredMapType: function (SettingsService) {
+                                return SettingsService.get().mapType.id;
+                            }
+                        },
                         views: {
                             'menuContent': {
                                 templateUrl: 'templates/track.html',
@@ -103,6 +108,9 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                         resolve: {
                             track: function ($stateParams, TrackStorage) {
                                 return TrackStorage.getById($stateParams.trackId);
+                            },
+                            requiredMapType: function (SettingsService) {
+                                return SettingsService.get().mapType.id;
                             }
                         },
                         views: {
@@ -155,13 +163,13 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
             $translateProvider.translations('bg', TRANSLATIONS.bg);
 
             $translateProvider.useSanitizeValueStrategy('escape');
-            
+
             //we are not able to use the SettingsService at this point
             //hint: custom SettingsService provider?
             var settings = JSON.parse(localStorage.getItem('settings'));
-            
+
             var locale = (!_.isEmpty(settings)) ? settings.locale : config.defaults.locale
-            
+
             $translateProvider.preferredLanguage(locale.id);
         })
         .filter('mapsUrl', function ($sce) {
