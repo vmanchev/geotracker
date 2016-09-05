@@ -10,13 +10,13 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
         var map_container = document.getElementById(selector);
 
         //@bug a bit of inconsistency
-        if(options && options.point){
-            if(options.point.lat && options.point.lng){ //view track
+        if (options && options.point) {
+            if (options.point.lat && options.point.lng) { //view track
                 options.latLng = ms.setPosition(options.point.lat, options.point.lng);
-            }else if(options.point.latitude && options.point.longitude){    //new track
+            } else if (options.point.latitude && options.point.longitude) {    //new track
                 options.latLng = ms.setPosition(options.point.latitude, options.point.longitude);
-            }            
-            
+            }
+
             delete options.point;
         }
 
@@ -27,7 +27,7 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
         // Invoking Map using Google Map SDK v2 by dubcanada
         var map = plugin.google.maps.Map.getMap(map_container, {
             camera: options
-        }); 
+        });
 
         //@see MenuController
         $rootScope.$on('sidemenu:on', function () {
@@ -43,8 +43,8 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
         map.addEventListener(plugin.google.maps.event.MAP_READY, function (map) {
             deferred.resolve(map);
         });
-        
-         return deferred.promise;
+
+        return deferred.promise;
     };
 
 
@@ -63,17 +63,17 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
      * 
      * @returns {array} Array of objects with two keys - lat and lng
      */
-    ms.getPolylinePoints = function(points){
+    ms.getPolylinePoints = function (points) {
 
         var filtered = [];
-        
-        angular.forEach(points, function(point){
+
+        angular.forEach(points, function (point) {
             this.push(ms.setPosition(point.coords.latitude, point.coords.longitude));
         }, filtered);
 
         return filtered;
     };
-    
+
     /**
      * Add marker to the map
      * 
@@ -85,7 +85,7 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
      * @returns {object} Updated map
      */
     ms.addMarker = function (map, lat, lng) {
-        
+
         var position = ms.setPosition(lat, lng);
 
         map.addMarker({
@@ -108,15 +108,15 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
      * Removes a map from DOM
      */
     ms.remove = function (map) {
-        
+
         map.remove();
-        
+
         //reset our internal map reference
         map = null;
 
         return map;
     };
-    
+
     /**
      * Add polyline
      * 
@@ -128,16 +128,26 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
      * @returns {map} Updated map
      */
     ms.addPolyline = function (map, points) {
-        
+
         map.addPolyline({
             points: points,
             color: '#990000',
             width: 5
         });
-        
-        return map;
-    }
 
+        return map;
+    };
+
+    ms.getLicenseInfo = function () {
+
+        var deferred = $q.defer();
+
+        plugin.google.maps.Map.getLicenseInfo(function(v1, v2){
+            deferred.resolve(v1 || v2);
+        });
+        
+        return deferred.promise;
+    };
 
     return ms;
 

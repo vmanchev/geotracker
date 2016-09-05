@@ -1,0 +1,26 @@
+<ion-view view-title="{{ 'nav.about' | translate }}">
+    <ion-content>
+
+        <div class="row">
+            <div class="col text-center">
+                <button class="button button-positive button-full" data-ng-click="googleMapsLegal();">{{ "about.googleMapsLegal" | translate }}</button>
+            </div>
+        </div>
+
+
+    </ion-content>
+</ion-view>
+
+<script id="legal-modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <ion-header-bar>
+      <h1 class="title">{{ "about.googleMapsLegal" | translate }}</h1>
+      <div class="buttons">
+        <button type="button" class="button button-icon icon ion-ios-close-outline" data-ng-click="closeModal();"></button>
+      </div>
+    </ion-header-bar>
+    <ion-content class="padding">
+    {{ gmLicense }}
+    </ion-content>
+  </ion-modal-view>
+</script>

@@ -6,8 +6,12 @@ var TRANSLATIONS = {
         "nav.home": "Home",
         "nav.history": "History",
         "nav.settings" : "Settings",
+        "nav.about" : "About",
         "nav.edit" : "Edit",
         
+        "track.startTime" : "Start",
+        "track.endTime" : "End",
+        "track.duration" : "Duration",
         "track.start": "Start new track",
         "track.stop": "Stop",
         "track.save": "Save",
@@ -22,9 +26,6 @@ var TRANSLATIONS = {
         "track.details": "Details",
         "track.delete" : "Delete",
         "track.edit" : "Edit",
-        "track.startTime" : "Start",
-        "track.endTime" : "End",
-        "track.duration" : "Duration",
         
         
         "settings.language" : "Language",
@@ -45,7 +46,9 @@ var TRANSLATIONS = {
         "time.day" : "day(s)",
         "time.hour" : "hour(s)",
         "time.minute" : "minute(s)",
-        "time.second" : "second(s)"
+        "time.second" : "second(s)",
+        
+        "about.googleMapsLegal" : "Google Maps Legal Notice"
     },
     "bg": {
         "name" : "Български",
@@ -54,11 +57,12 @@ var TRANSLATIONS = {
         "nav.home": "Начало",
         "nav.history": "История",
         "nav.settings" : "Настройки",
+        "nav.about" : "Информация",
         "nav.edit" : "Редактирай",
+        
         "track.startTime" : "Начало",
         "track.endTime" : "Край",
-        "track.duration" : "Време",
-        
+        "track.duration" : "Време",        
         "track.start": "Нов маршрут",
         "track.stop": "Стоп",
         "track.save": "Запази",
@@ -92,6 +96,8 @@ var TRANSLATIONS = {
         "time.day" : "дн.",
         "time.hour" : "ч.",
         "time.minute" : "мин.",
-        "time.second" : "сек."
+        "time.second" : "сек.",
+        
+        "about.googleMapsLegal" : "Лиценз на Google Maps"
     }
 };

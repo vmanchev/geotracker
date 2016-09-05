@@ -152,6 +152,16 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                                 controller: 'SettingsController'
                             }
                         }
+                    })
+                    .state('app.about', {
+                        url: '/about',
+                        cache: false,
+                        views: {
+                            'menuContent': {
+                                templateUrl: 'templates/about.html',
+                                controller: 'AboutController'
+                            }
+                        }
                     });
 
             // if none of the above states are matched, use this as the fallback
