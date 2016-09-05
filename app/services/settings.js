@@ -42,7 +42,7 @@ geoApp.service('SettingsService', function ($translate, I18nService) {
         var defaults = {
             locale: config.defaults.locale,
             mapType: _.filter(this.getMapTypes(), {id: config.defaults.mapType}).shift(),
-            apikey: ''
+            apikey: config.defaults.apikey
         };
 
         this.set(defaults);

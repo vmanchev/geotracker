@@ -1,12 +1,26 @@
-ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, TrackStorage, SettingsService) {
+ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, JsMapsService, TrackStorage, SettingsService) {
+
+    $scope.jsMapSelector = 'js_map';
+    $scope.nativeMapSelector = 'native_map';
+
     //has tracking been started or not
     $scope.isTracking = false;
     $scope.readyToSave = false;
+    $scope.initPoint = {};
 
     //map scale ratio, see app.js
     $rootScope.mapScreenScale = 0.8;
 
-    //start tracking
+    /**
+     * Start a new track
+     * 
+     * When the "Start" button is clicked, we will first try to get the current 
+     * position and in case of success, will broadcast the "tracking:started" 
+     * event along with the location data.
+     * 
+     * @todo In case of an error, show a proper message.
+     * @returns {undefined}
+     */
     $scope.startTracking = function () {
 
         $scope.startTime = new Date();
@@ -14,12 +28,11 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
         $ionicLoading.show();
 
         $cordovaGeolocation.getCurrentPosition({
-            timeout: 10000,
-            enableHighAccuracy: true,
-            maximumAge: 3000
+            timeout: 30000,
+            enableHighAccuracy: false,
+            maximumAge: 2000
         }).then(function (locationData) {
-            $scope.$broadcast('tracking:started');
-            $scope.positionSuccess(locationData);
+            $scope.$broadcast('tracking:started', locationData);
         }, $scope.positionError)
                 .finally(function () {
                     $ionicLoading.hide();
@@ -29,28 +42,28 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
     /**
      * Track success callback
      * 
-     * Will be called on position change
+     * Will be called on position change. Actions to be performed: 
+     * 1. Collect the position data
+     * 2. Call the watchTracking function, if the watcher hasn't been started yet.
+     * 3. Call the updateMap function to add a new marker.
      * 
-     * @param {type} data
-     * @returns {undefined}
+     * @param {object} data
+     * @returns {undefined} Object with two keys - timestamp and coords. Coords 
+     * itself is an object with two keys - latitiude and longitude. 
+     * 
+     * @example 
+     * {
+     *  timestamp: data.timestamp,
+     *  coords: {
+     *      latitude: data.coords.latitude,
+     *      longitude: data.coords.longitude
+     *  }
+     * }
      */
     $scope.positionSuccess = function (data) {
 
         //add the new point to the array of points
         $scope.points.push(data);
-
-        /**
-         * @bug Coordinates object, provided by the browsers, can not be 
-         * serialized. During the development process, I can not get 
-         * any coordinates into the storage.
-         */
-//                $scope.points.push({
-//                    timestamp: data.timestamp,
-//                    coords: {
-//                        latitude: data.coords.latitude,
-//                        longitude: data.coords.longitude
-//                    }
-//                });
 
         //if watcher hasn't been started yet, start it now
         if (!$scope.trackWatch) {
@@ -77,71 +90,31 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
 
         $scope.trackWatch = $cordovaGeolocation.watchPosition({
             timeout: 30000,
-            frequency: 10000,
-            enableHighAccuracy: true // may cause errors if true
+            frequency: 2000,
+            enableHighAccuracy: false // may cause errors if true
         });
 
-        $scope.trackWatch.then(null, function(error){
+        $scope.trackWatch.then(null, function (error) {
 
             $scope.positionError(error);
-            
+
             //restarting the watcher
             $scope.trackWatch.clearWatch();
             $scope.watchTracking();
-            
-        }, $scope.positionSuccess);
 
-    }
-
-    /**
-     * Initialize map
-     */
-    $scope.initMap = function () {
-
-        var mapOptions = {
-            zoom: 15,
-            mapTypeId: google.maps.MapTypeId.ROADMAP
-        };
-
-        $timeout(function () {
-            $rootScope.map = new google.maps.Map
-                    (document.getElementById("map"), mapOptions);
-        })
+        }, function(data){
+            $scope.positionSuccess(data);
+        });
 
     }
 
     //display position on the map
     $scope.updateMap = function (latitude, longitude) {
-
-        if (angular.isUndefined($rootScope.map)) {
-            $scope.initMap();
-        }
-
-        var latLong = new google.maps.LatLng(latitude, longitude);
-
-        var marker = new google.maps.Marker({
-            position: latLong
-        });
-
-        $timeout(function () {
-            marker.setMap($rootScope.map);
-            $rootScope.map.setCenter(marker.getPosition());
-        });
+        $scope.map = JsMapsService.addMarker(
+                $scope.map,
+                JsMapsService.setPosition(latitude, longitude)
+        );
     }
-
-    $scope.resetMap = function () {
-        //Find the map DOM element
-        var mapElement = document.getElementById('map');
-
-        //remove the html code
-        mapElement.innerHTML = '';
-
-        //remove the inline style
-        mapElement.removeAttribute("style");
-
-        //reset our internal map reference
-        $rootScope.map = null;
-    };
 
     /**
      * Stop tracking
@@ -185,38 +158,79 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
         $scope.$broadcast('tracking:saved');
     }
 
+    /**
+     * Listener for the tracking:started event
+     * 
+     * When this event is captured, it means the tracking has been started 
+     * successfully and we have the current position. Actions to be performed: 
+     * 1. Call the MapService to initialize the map. 
+     * 2. Set the initial states of all supporting variables. 
+     * 3. Call the positionSuccess function.
+     */
     $scope.$on('tracking:started', function (event, data) {
 
-        $scope.initMap();
+        $scope.initPoint = data;
 
-        $scope.isTracking = true;
+        JsMapsService.initMap($scope.jsMapSelector, {
+            point: $scope.initPoint.coords,
+            zoom: 16
+        }).then(function (map) {
 
-        //container for geo location points
-        $scope.points = [];
+            $scope.map = map;
 
-        //has watcher been started or not
-        $scope.trackWatch = null;
+            $scope.isTracking = true;
 
-        $scope.trackId = (new Date()).getTime();
+            //container for geo location points
+            $scope.points = [];
 
-        $scope.trackInfo = {
-            title: null,
-            notes: null
-        };
+            //has watcher been started or not
+            $scope.trackWatch = null;
+
+            $scope.trackId = (new Date()).getTime();
+
+            $scope.trackInfo = {
+                title: null,
+                notes: null
+            };
+
+            $scope.positionSuccess($scope.initPoint);
+
+            $scope.initPoint = {};
+        });
+
     });
 
-    $scope.$on('tracking:stopped', function (event, data) {
-        //1. allow the client to optionally add title and description
-
-        //2. show the save button
-
+    /**
+     * Stop button listener
+     * 
+     * When the "Stop" button is clicked, it means the user is at their destination 
+     * and are ready to save the track. Actions to be performed:
+     * 
+     * 1. Hide the start/stop buttons at the top.
+     * 2. Allow the user to optionally add title and description.
+     * 3. show the save button
+     * 
+     * Please note, at this point the information is not saved! It's still in 
+     * the current scope.
+     */
+    $scope.$on('tracking:stopped', function () {
         $scope.readyToSave = true;
     });
 
+    /**
+     * Save button listener
+     * 
+     * The track information has already been saved in the data store. Now do 
+     * the chore: 
+     * 1. Destroy the map
+     * 2. Reset the points array to an empty one.
+     * 3. Switch some flags.
+     * 4. Navigate to the History page
+     */
     $scope.$on('tracking:saved', function (event, data) {
 
-        $scope.resetMap();
-
+        $scope.map = JsMapsService.remove($scope.map, $scope.jsMapSelector);
+        
         $scope.points = [];
         $scope.readyToSave = false;
 

@@ -14,10 +14,8 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                     StatusBar.styleDefault();
                 }
 
-                var settings = SettingsService.get();
+                $rootScope.apikey = SettingsService.get().apikey;
 
-                $rootScope.apikey = settings.apikey;
-                
                 $rootScope.$on('locale-changed', function(event, locale){
                     $translate.use(locale.id);
                 });
@@ -168,7 +166,7 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
         })
         .filter('mapsUrl', function ($sce) {
             return function (apikey) {
-                if (_.isUndefined(apikey)) {
+                if (_.isEmpty(apikey)) {
                     return $sce.trustAsResourceUrl(config.maps.js);
                 } else {
                     return $sce.trustAsResourceUrl(config.maps.js + '?key=' + apikey);
