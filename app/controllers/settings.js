@@ -12,8 +12,6 @@ ctrl.controller('SettingsController', function ($rootScope, $scope, $translate, 
     $scope.saveSettings = function () {
         SettingsService.set($scope.settings);
         $scope.settings = SettingsService.get();
-
-        $rootScope.apikey = $scope.settings.apikey;
     }
 
 });

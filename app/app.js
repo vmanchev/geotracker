@@ -14,35 +14,7 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                     StatusBar.styleDefault();
                 }
 
-                $rootScope.loadScript = function (url, type, charset) {
-                    if (type === undefined)
-                        type = 'text/javascript';
-                    if (url) {
-                        var script = document.querySelector("script[src*='" + url + "']");
-                        if (!script) {
-                            var heads = document.getElementsByTagName("head");
-                            if (heads && heads.length) {
-                                var head = heads[0];
-                                if (head) {
-                                    script = document.createElement('script');
-                                    script.setAttribute('src', url);
-                                    script.setAttribute('type', type);
-                                    if (charset)
-                                        script.setAttribute('charset', charset);
-                                    head.appendChild(script);
-                                }
-                            }
-                        }
-                        return script;
-                    }
-                };
-
-                $rootScope.$watch('apikey', function (newValue) {
-                    $rootScope.loadScript('https://maps.googleapis.com/maps/api/js?key=' + newValue);
-                });
-
                 $rootScope.apikey = SettingsService.get().apikey;
-
 
                 // Find matches
                 var mql = window.matchMedia("(orientation: portrait)");
@@ -170,6 +142,18 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
             var useLanguage = (!_.isNull(selectedLanguage)) ? selectedLanguage.id : 'bg';
 
             $translateProvider.preferredLanguage(useLanguage);
+        })
+        .filter('mapsUrl', function ($sce) {
+            return function (apikey) {
+                
+                var url = 'https://maps.googleapis.com/maps/api/js';
+
+                if(_.isUndefined(apikey)){
+                    return $sce.trustAsResourceUrl(url);
+                }else{
+                    return $sce.trustAsResourceUrl(url + '?key=' + apikey);
+                }
+            };
         });
 
 var ctrl = angular.module('starter.controllers', []);

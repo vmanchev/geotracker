@@ -1,4 +1,4 @@
-ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $stateParams, $ionicPopup, $translate, TrackStorage, track) {
+ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $stateParams, $ionicPopup, $translate, TrackStorage, SettingsService, track) {
 
     //track data has already been resolved in the route
     $scope.track = track;

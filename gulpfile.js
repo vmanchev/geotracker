@@ -60,7 +60,7 @@ gulp.task('app-scripts', function (cb) {
     return gulp.src(['./app/**/*'])
             .pipe(concat('app.min.js'))
             .pipe(ngAnnotate({single_quotes: true}))
-            .pipe(uglify())
+            //.pipe(uglify())
             .pipe(gulp.dest('./www/js/'));
 });
 

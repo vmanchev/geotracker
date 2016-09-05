@@ -1,4 +1,4 @@
-ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, TrackStorage) {
+ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, TrackStorage, SettingsService) {
     //has tracking been started or not
     $scope.isTracking = false;
     $scope.readyToSave = false;
