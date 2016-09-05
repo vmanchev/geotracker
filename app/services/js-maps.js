@@ -47,9 +47,9 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
         return filtered;
     };
 
-    ms.addMarker = function (map, point) {
+    ms.addMarker = function (map, lat, lng) {
         var marker = new google.maps.Marker({
-            position: point
+            position: ms.setPosition(lat, lng)
         });
 
         marker.setMap(map);

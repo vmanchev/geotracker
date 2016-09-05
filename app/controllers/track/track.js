@@ -1,7 +1,8 @@
-ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, JsMapsService, TrackStorage, SettingsService) {
+ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, $translate, $timeout, JsMapsService, TrackStorage, NativeMapsService, SettingsService) {
 
-    $scope.jsMapSelector = 'js_map';
-    $scope.nativeMapSelector = 'native_map';
+    $scope.mapSelector = 'map';
+    
+    var mapService = (SettingsService.get().mapType.id === 'js') ? JsMapsService : NativeMapsService;
 
     //has tracking been started or not
     $scope.isTracking = false;
@@ -110,9 +111,10 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
 
     //display position on the map
     $scope.updateMap = function (latitude, longitude) {
-        $scope.map = JsMapsService.addMarker(
+        $scope.map = mapService.addMarker(
                 $scope.map,
-                JsMapsService.setPosition(latitude, longitude)
+                latitude, 
+                longitude
         );
     }
 
@@ -171,7 +173,7 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
 
         $scope.initPoint = data;
 
-        JsMapsService.initMap($scope.jsMapSelector, {
+        mapService.initMap($scope.mapSelector, {
             point: $scope.initPoint.coords,
             zoom: 16
         }).then(function (map) {
@@ -229,7 +231,7 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
      */
     $scope.$on('tracking:saved', function (event, data) {
 
-        $scope.map = JsMapsService.remove($scope.map, $scope.jsMapSelector);
+        $scope.map = mapService.remove($scope.map, $scope.mapSelector);
         
         $scope.points = [];
         $scope.readyToSave = false;
