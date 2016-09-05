@@ -2,26 +2,32 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
 
     var ms = {};
 
-    ms.initMap = function (selector, cameraOptions) {
+    ms.initMap = function (selector, options) {
 
         var deferred = $q.defer();
 
         // Getting the map selector in DOM
         var map_container = document.getElementById(selector);
 
-        if (!_.isUndefined(cameraOptions.point) && !_.isUndefined(cameraOptions.point.latitude) && !_.isUndefined(cameraOptions.point.longitude)) {
-            cameraOptions.latLng = ms.setPosition(cameraOptions.point.latitude, cameraOptions.point.longitude);
-            delete cameraOptions.point;
+        //@bug a bit of inconsistency
+        if(options && options.point){
+            if(options.point.lat && options.point.lng){ //view track
+                options.latLng = ms.setPosition(options.point.lat, options.point.lng);
+            }else if(options.point.latitude && options.point.longitude){    //new track
+                options.latLng = ms.setPosition(options.point.latitude, options.point.longitude);
+            }            
+            
+            delete options.point;
         }
 
-        if (_.isUndefined(cameraOptions.zoom)) {
-            cameraOptions.zoom = 10;
+        if (_.isUndefined(options.zoom)) {
+            options.zoom = 10;
         }
 
         // Invoking Map using Google Map SDK v2 by dubcanada
         var map = plugin.google.maps.Map.getMap(map_container, {
-            camera: cameraOptions
-        });
+            camera: options
+        }); 
 
         //@see MenuController
         $rootScope.$on('sidemenu:on', function () {
@@ -66,6 +72,70 @@ geoApp.factory('NativeMapsService', function ($rootScope, $q) {
         }, filtered);
 
         return filtered;
+    };
+    
+    /**
+     * Add marker to the map
+     * 
+     * Map will also get cetered at the marker position
+     * 
+     * @param {object} map Source map
+     * @param {float} lat Marker latitude
+     * @param {float} lng Marker longitude
+     * @returns {object} Updated map
+     */
+    ms.addMarker = function (map, lat, lng) {
+        
+        var position = ms.setPosition(lat, lng);
+
+        map.addMarker({
+            'position': position,
+            'icon': {
+                'url': 'www/img/marker.png',
+                size: {
+                    width: 10,
+                    height: 10
+                }
+            }
+        });
+
+        map.setCenter(position);
+
+        return map;
+    };
+
+    /**
+     * Removes a map from DOM
+     */
+    ms.remove = function (map) {
+        
+        map.remove();
+        
+        //reset our internal map reference
+        map = null;
+
+        return map;
+    };
+    
+    /**
+     * Add polyline
+     * 
+     * For the initial version, a lot of options are hardcoded. These could 
+     * easily goes to the configuration file.
+     * 
+     * @param {object} map Source map
+     * @param {array} points Array of points
+     * @returns {map} Updated map
+     */
+    ms.addPolyline = function (map, points) {
+        
+        map.addPolyline({
+            points: points,
+            color: '#990000',
+            width: 5
+        });
+        
+        return map;
     }
 
 

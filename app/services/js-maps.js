@@ -7,20 +7,17 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
         var deferred = $q.defer();
 
         var mapOptions = {
-            zoom: 15,
+            zoom: (options.zoom) ? options.zoom : 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP
         };
 
         //@bug a bit of inconsistency
         if(options && options.point){
-            
             if(options.point.lat && options.point.lng){ //view track
                 mapOptions.center = {lat: options.point.lat, lng: options.point.lng};
             }else if(options.point.latitude && options.point.longitude){    //new track
                 mapOptions.center = {lat: options.point.latitude, lng: options.point.longitude};
-            }
-            
-            
+            }            
         }
 
         $timeout(function () {
@@ -59,6 +56,16 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
         return filtered;
     };
 
+    /**
+     * Add marker to the map
+     * 
+     * Map will also get cetered at the marker position
+     * 
+     * @param {object} map Source map
+     * @param {float} lat Marker latitude
+     * @param {float} lng Marker longitude
+     * @returns {object} Updated map
+     */
     ms.addMarker = function (map, lat, lng) {
         var marker = new google.maps.Marker({
             position: ms.setPosition(lat, lng)
@@ -89,6 +96,16 @@ geoApp.factory('JsMapsService', function ($rootScope, $q, $timeout) {
         return map;
     };
 
+    /**
+     * Add polyline
+     * 
+     * For the initial version, a lot of options are hardcoded. These could 
+     * easily goes to the configuration file.
+     * 
+     * @param {object} map Source map
+     * @param {array} points Array of points
+     * @returns {map} Updated map
+     */
     ms.addPolyline = function (map, points) {
 
         // Define a symbol using SVG path notation, with an opacity of 1.

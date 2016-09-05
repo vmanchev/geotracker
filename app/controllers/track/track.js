@@ -30,8 +30,8 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
 
         $cordovaGeolocation.getCurrentPosition({
             timeout: 30000,
-            enableHighAccuracy: false,
-            maximumAge: 2000
+            enableHighAccuracy: true,
+            maximumAge: 10000
         }).then(function (locationData) {
             $scope.$broadcast('tracking:started', locationData);
         }, $scope.positionError)
@@ -91,8 +91,8 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
 
         $scope.trackWatch = $cordovaGeolocation.watchPosition({
             timeout: 30000,
-            frequency: 2000,
-            enableHighAccuracy: false // may cause errors if true
+            frequency: 10000,
+            enableHighAccuracy: true// may cause errors if true
         });
 
         $scope.trackWatch.then(null, function (error) {
