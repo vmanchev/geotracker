@@ -1,6 +1,6 @@
 var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers', 'ngCordova', 'pascalprecht.translate'])
 
-        .run(function ($ionicPlatform, $rootScope, $timeout, SettingsService) {
+        .run(function ($ionicPlatform, $rootScope, $timeout, $translate, SettingsService) {
             $ionicPlatform.ready(function () {
                 // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
                 // for form inputs)
@@ -14,7 +14,13 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                     StatusBar.styleDefault();
                 }
 
-                $rootScope.apikey = SettingsService.get().apikey;
+                var settings = SettingsService.get();
+
+                $rootScope.apikey = settings.apikey;
+                
+                $rootScope.$on('locale-changed', function(event, locale){
+                    $translate.use(locale.id);
+                });
 
                 // Find matches
                 var mql = window.matchMedia("(orientation: portrait)");
@@ -53,10 +59,14 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                         });
                     }
                 });
-
             });
         })
-
+        .provider('settingsService', function settingsServiceProvider() {
+            this.$get = function() {
+                return new SettingsService();
+            };            
+            return this;
+        })
         .config(function ($stateProvider, $urlRouterProvider) {
             $stateProvider
 
@@ -119,6 +129,17 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
                     .state('app.settings', {
                         url: '/settings',
                         cache: false,
+                        resolve: {
+                            mapTypes: function (SettingsService) {
+                                return SettingsService.getMapTypes();
+                            },
+                            availableLanguages: function (I18nService) {
+                                return I18nService.getAvailableLanguages();
+                            },
+                            settings: function (SettingsService) {
+                                return SettingsService.get();
+                            }
+                        },
                         views: {
                             'menuContent': {
                                 templateUrl: 'templates/settings.html',
@@ -136,18 +157,20 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
             $translateProvider.translations('bg', TRANSLATIONS.bg);
 
             $translateProvider.useSanitizeValueStrategy('escape');
-
-            var selectedLanguage = JSON.parse(localStorage.getItem("locale"));
-
-            var useLanguage = (!_.isNull(selectedLanguage)) ? selectedLanguage.id : 'bg';
-
-            $translateProvider.preferredLanguage(useLanguage);
+            
+            //we are not able to use the SettingsService at this point
+            //hint: custom SettingsService provider?
+            var settings = JSON.parse(localStorage.getItem('settings'));
+            
+            var locale = (!_.isEmpty(settings)) ? settings.locale : config.defaults.locale
+            
+            $translateProvider.preferredLanguage(locale.id);
         })
         .filter('mapsUrl', function ($sce) {
             return function (apikey) {
-                if(_.isUndefined(apikey)){
+                if (_.isUndefined(apikey)) {
                     return $sce.trustAsResourceUrl(config.maps.js);
-                }else{
+                } else {
                     return $sce.trustAsResourceUrl(config.maps.js + '?key=' + apikey);
                 }
             };

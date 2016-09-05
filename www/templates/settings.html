@@ -1,16 +1,15 @@
 <ion-view view-title="{{ 'nav.settings' | translate }}">
     <ion-content>
 
-        <ul class="list">
+        <ul class="list" data-ng-model-options="{ updateOn: 'default blur' }">
 
             <li class="item item-input item-select">
                 <div class="input-label">
                     {{ "settings.language" | translate }}
                 </div>
                 <select
-                    data-ng-model="selectedLanguage"                    
-                    data-ng-options="item.name for item in availableLanguages track by item.id"
-                    data-ng-change="setPreferedLanguage(selectedLanguage)">
+                    data-ng-model="settings.locale"                    
+                    data-ng-options="item.name for item in availableLanguages track by item.id">
                 </select>                
             </li>
 
@@ -32,13 +31,6 @@
             </li>            
 
         </ul>
-
-        <div class="row">
-            <div class="col text-center">
-                <button class="button button-positive button-full" data-ng-click="saveSettings();">{{ "track.save" | translate }}</button>
-            </div>
-        </div>
-
 
     </ion-content>
 </ion-view>

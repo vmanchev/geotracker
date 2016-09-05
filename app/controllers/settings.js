@@ -1,19 +1,25 @@
-ctrl.controller('SettingsController', function ($rootScope, $scope, $translate, $timeout, I18nService, SettingsService) {
+ctrl.controller('SettingsController', function ($rootScope, $scope, mapTypes, availableLanguages, settings, SettingsService) {
 
-    $scope.mapTypes = SettingsService.getMapTypes();
+    //options for map type dropdown
+    $scope.mapTypes = mapTypes;
+    
+    //options for languages dropdown
+    $scope.availableLanguages = availableLanguages;
+    
+    //make the settings available in the view
+    $scope.settings = settings;
 
-    $scope.availableLanguages = I18nService.getAvailableLanguages();
-    $scope.settings = SettingsService.get();
+    /**
+     * If the locale change, emit an event and pass the data, so the app interface 
+     * can be translated immediately. There is a listener in the .run() method.
+     */
+    $scope.$watch('settings.locale', function(newLocale){
+        $rootScope.$emit('locale-changed', newLocale);
+    });
 
-    $scope.selectedLanguage = JSON.parse(localStorage.getItem("locale"));
-
-    $scope.setPreferedLanguage = function (selectedLanguage) {
-        I18nService.setPreferedLanguage(selectedLanguage);
-    }
-
-    $scope.saveSettings = function () {
-        SettingsService.set($scope.settings);
-        $scope.settings = SettingsService.get();
-    }
+    //Settings will be updated onblur or on page leave (which is blur again)
+    $scope.$watch('settings', function(newSettings){
+        SettingsService.set(newSettings);
+    }, true);
 
 });
