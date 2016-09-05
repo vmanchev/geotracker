@@ -98,10 +98,6 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
      */
     $scope.initMap = function () {
 
-        if (!_.isUndefined($rootScope.map)) {
-            return;
-        }
-
         var mapOptions = {
             zoom: 15,
             mapTypeId: google.maps.MapTypeId.ROADMAP

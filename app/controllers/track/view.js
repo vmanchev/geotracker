@@ -1,4 +1,4 @@
-ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $stateParams, $ionicPopup, $translate, TrackStorage, SettingsService, track) {
+ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $stateParams, $ionicPopup, $translate, $timeout, TrackStorage, SettingsService, track) {
 
     //track data has already been resolved in the route
     $scope.track = track;
@@ -15,7 +15,7 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $st
     function initMap(points, mapTypeId) {
         $rootScope.map = new google.maps.Map(document.getElementById('map'), {
             zoom: 15,
-            center: points[0],
+            center: (points.length > 3) ? points[Math.ceil(points.length/2)] : points[0],
             mapTypeId: mapTypeId
         });
 
@@ -45,7 +45,10 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $st
         });
     };
 
-    initMap($scope.points, 'terrain');
+    $timeout(function(){
+       initMap($scope.points, 'terrain'); 
+    });
+    
 
     //Confirmation dialog in case the user clicks on the delete button
     $scope.confirmDelete = function () {
