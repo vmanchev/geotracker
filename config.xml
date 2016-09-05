@@ -41,7 +41,7 @@
   <plugin name="cordova-plugin-geolocation"/>
   <plugin name="cordova-plugin-console"/>
   <plugin name="ionic-plugin-keyboard" source="npm"/>
-  <plugin name="cordova-plugin-whitelist" source="npm" />
+  <plugin name="cordova-plugin-whitelist" source="npm"/>
   <platform name="android">
     <icon src="resources/android/icon/drawable-ldpi-icon.png" density="ldpi"/>
     <icon src="resources/android/icon/drawable-mdpi-icon.png" density="mdpi"/>
