@@ -28,6 +28,9 @@ var TRANSLATIONS = {
         
         
         "settings.language" : "Language",
+        "settings.maptypes" : "Map type",
+        "settings.map.type.js" : "JavaScript",
+        "settings.map.type.native" : "Native",
         "settings.apikey" : "Google API Key",
         
         "dialog.confirm" : "Confirm",
@@ -72,6 +75,9 @@ var TRANSLATIONS = {
         "track.edit" : "Редактирай",
         
         "settings.language" : "Език",
+        "settings.maptypes" : "Тип карти",
+        "settings.map.type.js" : "JavaScript",
+        "settings.map.type.native" : "Native",        
         "settings.apikey" : "Google API Key",
         
         "dialog.confirm" : "Потвърди",

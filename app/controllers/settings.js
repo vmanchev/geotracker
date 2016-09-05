@@ -1,5 +1,7 @@
 ctrl.controller('SettingsController', function ($rootScope, $scope, $translate, $timeout, I18nService, SettingsService) {
 
+    $scope.mapTypes = SettingsService.getMapTypes();
+
     $scope.availableLanguages = I18nService.getAvailableLanguages();
     $scope.settings = SettingsService.get();
 

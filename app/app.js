@@ -145,13 +145,10 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
         })
         .filter('mapsUrl', function ($sce) {
             return function (apikey) {
-                
-                var url = 'https://maps.googleapis.com/maps/api/js';
-
                 if(_.isUndefined(apikey)){
-                    return $sce.trustAsResourceUrl(url);
+                    return $sce.trustAsResourceUrl(config.maps.js);
                 }else{
-                    return $sce.trustAsResourceUrl(url + '?key=' + apikey);
+                    return $sce.trustAsResourceUrl(config.maps.js + '?key=' + apikey);
                 }
             };
         });

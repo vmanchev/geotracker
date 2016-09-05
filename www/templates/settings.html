@@ -13,13 +13,23 @@
                     data-ng-change="setPreferedLanguage(selectedLanguage)">
                 </select>                
             </li>
-            
+
             <li class="item item-input">
                 <div class="input-label">
                     {{ "settings.apikey" | translate }}
                 </div>
                 <input type="text" data-ng-model="settings.apikey">
             </li>
+            
+            <li class="item item-input item-select">
+                <div class="input-label">
+                    {{ "settings.maptypes" | translate }}
+                </div>
+                <select
+                    data-ng-model="settings.mapType"
+                    data-ng-options="item.name for item in mapTypes track by item.id">
+                </select>                
+            </li>            
 
         </ul>
 
