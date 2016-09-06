@@ -42,13 +42,14 @@ var TRANSLATIONS = {
         "common.yes" : "Yes",
         "common.no" : "No",
         "common.cancel" : "Cancel",
+        "common.na" : "N/A",
         
-        "time.year" : "year(s)",
-        "time.month" : "month(s)",
-        "time.day" : "day(s)",
-        "time.hour" : "hour(s)",
-        "time.minute" : "minute(s)",
-        "time.second" : "second(s)",
+        "time.year" : "y",
+        "time.month" : "mo",
+        "time.day" : "d",
+        "time.hour" : "h",
+        "time.minute" : "m",
+        "time.second" : "s",
         
         "about.googleMapsLegal" : "Google Maps Legal Notice"
     },
@@ -94,6 +95,7 @@ var TRANSLATIONS = {
         "common.yes" : "Да",
         "common.no" : "Не",
         "common.cancel" : "Откажи",
+        "common.na" : "неизвестно",
         
         "time.year" : "г.",
         "time.month" : "мес.",

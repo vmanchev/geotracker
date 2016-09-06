@@ -45,6 +45,10 @@ geoApp.factory('TrackStorage', function ($translate) {
      * If there are no tracks in the storage (this is the first one), add the new 
      * track to the empty tracks array. 
      * 
+     * If it is a new track, it will be added to the beginning of the tracks array. 
+     * This will help us later to avoid sorting, when we need to show the list 
+     * of tracks - newer tracks will automatically appear at the top :)
+     * 
      * In case there are some tracks in the storage, try to lookup the track by 
      * its trackId property. If the passed track object does not exists in the 
      * tracks array, add the new one at the end. If the passed track object does 
@@ -64,14 +68,12 @@ geoApp.factory('TrackStorage', function ($translate) {
 
         var isExisting = (_.find(tracks, query)) ? true : false;
 
-        if (_.isEmpty(tracks)) {
-            tracks.push(track);
-        } else if (!_.isEmpty(tracks) && !isExisting) {
-            tracks.push(track);
-        } else if (!_.isEmpty(tracks) && isExisting) {
-
+        if (_.isEmpty(tracks) || (!_.isEmpty(tracks) && !isExisting)) {
+            //empty tracks array or a new track
+            tracks.unshift(track);
+        }else if (!_.isEmpty(tracks) && isExisting) {
+            //existing track to be updated
             var idx = _.findIndex(tracks, query);
-
             tracks[idx] = track;
         }
 
@@ -104,7 +106,7 @@ geoApp.factory('TrackStorage', function ($translate) {
 
     ts.formatPointTime = function (duration) {
         return moment.duration(duration, "seconds")
-                .format("h:mm:ss");
+                .format("h:mm:ss", {trim: false});
     };
 
     /**
@@ -132,7 +134,7 @@ geoApp.factory('TrackStorage', function ($translate) {
 
         angular.forEach(track.points, function (point) {
 
-            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords[key])) {
+            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords[key]) && !_.isEmpty(point.coords[key])) {
                 this.push({x:point.timestamp, y:point.coords[key]});
             }
         }, chartData.values);
@@ -151,7 +153,7 @@ geoApp.factory('TrackStorage', function ($translate) {
             }
         }, data);
 
-        return _.mean(data).toFixed(2);
+        return (_.isEmpty(data)) ? 0 : _.mean(data).toFixed(2);
         
     };
     
@@ -160,13 +162,15 @@ geoApp.factory('TrackStorage', function ($translate) {
         var data = [];
 
         angular.forEach(track.points, function (point) {
-
-            if (!_.isUndefined(point.coords.altitude)) {
-                this.push(parseFloat(point.coords.altitude));
+            //temp var to avoid  altitude casting twice
+            var tmpAltitude = parseFloat(point.coords.altitude);
+            
+            if (!isNaN(tmpAltitude)) {
+                this.push(tmpAltitude);
             }
         }, data);
 
-        return (_.max(data) - _.min(data)).toFixed(2);
+        return (_.isEmpty(data)) ? 0 : (_.max(data) - _.min(data)).toFixed(2);
         
     }
     

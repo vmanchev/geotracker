@@ -39,12 +39,6 @@
                 <button class="button button-positive button-full" data-ng-click="saveHistory();">{{ "track.save" | translate }}</button>
             </div>
         </div>
-        
-        <div class="row" data-ng-show="readyToSave">
-            <div class="col text-center">
-                <button class="button button-positive button-full" data-ng-click="saveHistory();">{{ "track.save" | translate }}</button>
-            </div>
-        </div>
 
         <div class="card" data-ng-repeat="point in points track by $index">
             <div class="item item-divider">

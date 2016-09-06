@@ -43,13 +43,13 @@
 
         </div>
         
-        <div class="row">
+        <div class="row" data-ng-show="altitudeChartData.values.length > 0">
             <div class="col" data-tap-disabled="true">
                 <nvd3 options="altitudeChartOptions" data="altitudeChartData"></nvd3>
             </div>
         </div>
         
-        <div class="row">
+        <div class="row" data-ng-show="speedChartData.values.length > 0">
             <div class="col" data-tap-disabled="true">
                 <nvd3 options="speedChartOptions" data="speedChartData"></nvd3>
             </div>

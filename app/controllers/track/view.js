@@ -18,7 +18,14 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
     var speedPoints = TrackStorage.getChartData($scope.track, 'speed');
     
     $scope.averageSpeed = TrackStorage.getAverageSpeed($scope.track);
+    if($scope.averageSpeed === 0){
+        $scope.averageSpeed = $translate.instant('common.na');
+    }
+    
     $scope.displacement = TrackStorage.getDisplacement($scope.track);
+    if($scope.displacement === 0){
+        $scope.displacement = $translate.instant('common.na');
+    }
 
     //map scale ratio, see app.js
     $rootScope.mapScreenScale = 1;
