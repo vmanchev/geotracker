@@ -1,4 +1,4 @@
-var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers', 'ngCordova', 'pascalprecht.translate'])
+var geoApp = angular.module('toxic.geotracker', ['ionic', 'toxic.geotracker.controllers', 'ngCordova', 'pascalprecht.translate', 'nvd3'])
 
         .run(function ($ionicPlatform, $rootScope, $timeout, $translate, SettingsService) {
             $ionicPlatform.ready(function () {
@@ -192,4 +192,4 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'starter.controllers',
             };
         });
 
-var ctrl = angular.module('starter.controllers', []);
+var ctrl = angular.module('toxic.geotracker.controllers', []);

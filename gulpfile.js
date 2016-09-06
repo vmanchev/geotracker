@@ -18,7 +18,7 @@ var paths = {
 
 gulp.task('serve:before', ['default', 'watch']);
 
-gulp.task('default', ['sass', 'main-bower-files', 'app-scripts', 'bower-fonts']);
+gulp.task('default', ['sass', 'bower-js', 'bower-css', 'bower-fonts', 'app-js']);
 
 gulp.task('sass', function (done) {
     gulp.src('./scss/**/*')
@@ -32,17 +32,33 @@ gulp.task('sass', function (done) {
             .on('end', done);
 });
 
-gulp.task('main-bower-files', function () {
+gulp.task('bower-js', function () {
 
-    var filterJS = gulpFilter('**/*.js', {restore: true});
+    var filterJS = gulpFilter('**/*.js', {restore: false});
 
     return gulp.src('./bower.json')
             .pipe(mainBowerFiles())
             .pipe(filterJS)
-            .pipe(concat('bower-files.min.js'))
+            .pipe(concat('bower.min.js'))
             .pipe(ngAnnotate({single_quotes: true}))
             .pipe(uglify())
             .pipe(gulp.dest('./www/js'));
+});
+
+gulp.task('bower-css', function () {
+
+    var filterCss = gulpFilter('**/*.css', {restore: false});
+
+
+    return gulp.src('./bower.json')
+            .pipe(mainBowerFiles())
+            .pipe(filterCss)
+            .pipe(concat('bower.min.css'))
+            .pipe(minifyCss({
+                keepSpecialComments: 0
+            }))
+            .pipe(gulp.dest('./www/css'));
+
 });
 
 gulp.task('bower-fonts', function () {
@@ -56,7 +72,7 @@ gulp.task('bower-fonts', function () {
 });
 
 
-gulp.task('app-scripts', function (cb) {
+gulp.task('app-js', function (cb) {
     return gulp.src(['./app/**/*'])
             .pipe(concat('app.min.js'))
             .pipe(ngAnnotate({single_quotes: true}))
@@ -66,7 +82,7 @@ gulp.task('app-scripts', function (cb) {
 
 gulp.task('watch', function () {
     gulp.watch(paths.sass, ['sass']);
-    gulp.watch(paths.appjs, ['app-scripts']);
+    gulp.watch(paths.appjs, ['app-js']);
 });
 
 gulp.task('install', ['git-check'], function () {

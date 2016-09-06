@@ -1,0 +1,111 @@
+{
+    "trackId": 1473166017550,
+    "info": {
+        "notes": "This dataset contains real coordinates and altitude information",
+        "title": "Test data set"
+    },
+    "startTime": "2016-09-06T15:46:570Z",
+    "endTime": "2016-09-06T16:06:570Z",
+    "duration": 1200,
+    "points": [
+        {
+            "timestamp": 1473166017550,
+            "coords": {
+                "latitude": 42.65012198224436,
+                "longitude": 23.367758821365328,
+                "altitude": 550.52,
+                "speed": 2.52
+            }
+        },
+        {
+            "timestamp": 1473166137550,
+            "coords": {
+                "latitude": 42.64988130295053,
+                "longitude": 23.36773736369321,
+                "altitude": 548.45,
+                "speed": 2.82
+            }
+        },
+        {
+            "timestamp": 1473166257550,
+            "coords": {
+                "latitude": 42.64953014624469,
+                "longitude": 23.36774809252927,
+                "altitude": 550,
+                "speed": 2.52
+            }
+        },
+        {
+            "timestamp": 1473166377550,
+            "coords": {
+                "latitude": 42.649214498075644,
+                "longitude": 23.36771054160306,
+                "altitude": 558,
+                "speed": 2.02
+            }
+        },
+        {
+            "timestamp": 1473166497550,
+            "coords": {
+                "latitude": 42.648906739568574,
+                "longitude": 23.36766762625882,
+                "altitude": 565,
+                "speed": 1.68
+            }
+        },
+        {
+            "timestamp": 1473166617550,
+            "coords": {
+                "latitude": 42.64857135997448,
+                "longitude": 23.367597888824434,
+                "altitude": 568,
+                "speed": 1.50
+            }
+        },
+        {
+            "timestamp": 1473166737550,
+            "coords": {
+                "latitude": 42.64828727231547,
+                "longitude": 23.367576431152315,
+                "altitude": 570,
+                "speed": 1.45
+            }
+        },
+        {
+            "timestamp": 1473166857550,
+            "coords": {
+                "latitude": 42.64807420571976,
+                "longitude": 23.367560337898226,
+                "altitude": 575,
+                "speed": 1.68
+            }
+        },
+        {
+            "timestamp": 1473166977550,
+            "coords": {
+                "latitude": 42.64776644157087,
+                "longitude": 23.36766762625882,
+                "altitude": 580,
+                "speed": 1.70
+            }
+        },
+        {
+            "timestamp": 1473167097550,
+            "coords": {
+                "latitude": 42.64739554429122,
+                "longitude": 23.367774914619417,
+                "altitude": 580,
+                "speed": 1.75
+            }
+        },
+        {
+            "timestamp": 1473167217550,
+            "coords": {
+                "latitude": 42.647016753297535,
+                "longitude": 23.36793048274228,
+                "altitude": 580,
+                "speed": 1.65
+            }
+        }
+    ]
+}

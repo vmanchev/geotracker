@@ -10,6 +10,7 @@
     "lodash": "^4.15.0",
     "moment": "^2.14.1",
     "moment-duration-format": "^1.3.0",
-    "ngCordova": "^0.1.27-alpha"
+    "ngCordova": "^0.1.27-alpha",
+    "angular-nvd3": "^1.0.9"
   }
 }

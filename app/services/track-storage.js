@@ -102,6 +102,11 @@ geoApp.factory('TrackStorage', function ($translate) {
                 .format("Y [" + $translate.instant('time.year') + "], M [" + $translate.instant('time.month') + "], D [" + $translate.instant('time.day') + "], h [" + $translate.instant('time.hour') + "], m [" + $translate.instant('time.minute') + "], s [" + $translate.instant('time.second') + "]");
     };
 
+    ts.formatPointTime = function (duration) {
+        return moment.duration(duration, "seconds")
+                .format("h:mm:ss");
+    };
+
     /**
      * Get track points
      * 
@@ -110,15 +115,41 @@ geoApp.factory('TrackStorage', function ($translate) {
      * 
      * @returns {array} Array of objects with two keys - lat and lng
      */
-    ts.getPolylinePoints = function(points){
+    ts.getPolylinePoints = function (points) {
 
         var filtered = [];
-        
-        angular.forEach(points, function(point){
+
+        angular.forEach(points, function (point) {
             this.push({lat: point.coords.latitude, lng: point.coords.longitude});
         }, filtered);
 
         return filtered;
+    };
+
+    ts.getAltitudePoints = function (track) {
+
+        var chartData = {key: 'series0', type: "line", values: [], yAxis: 1};
+
+        angular.forEach(track.points, function (point) {
+            if (!_.isUndefined(point.timestamp)) {
+                this.push({x:point.timestamp, y:point.coords.altitude.toFixed(2)});
+            }
+        }, chartData.values);
+
+        return chartData;
+    };
+
+    ts.getSpeedPoints = function (track) {
+
+        var chartData = {key: 'series1', type: "line", values: [], yAxis: 2};
+
+        angular.forEach(track.points, function (point) {
+            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords.speed)) {
+                this.push({x: point.timestamp, y:point.coords.speed.toFixed(2)});
+            }
+        }, chartData.values);
+
+        return chartData;
     }
 
     /**
