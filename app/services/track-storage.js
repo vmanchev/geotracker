@@ -126,31 +126,50 @@ geoApp.factory('TrackStorage', function ($translate) {
         return filtered;
     };
 
-    ts.getAltitudePoints = function (track) {
+    ts.getChartData = function (track, key) {
 
-        var chartData = {key: 'series0', type: "line", values: [], yAxis: 1};
+        var chartData = {key: key, values: []};
 
         angular.forEach(track.points, function (point) {
-            if (!_.isUndefined(point.timestamp)) {
-                this.push({x:point.timestamp, y:point.coords.altitude.toFixed(2)});
+
+            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords[key])) {
+                this.push({x:point.timestamp, y:point.coords[key]});
             }
         }, chartData.values);
 
         return chartData;
     };
-
-    ts.getSpeedPoints = function (track) {
-
-        var chartData = {key: 'series1', type: "line", values: [], yAxis: 2};
+    
+    ts.getAverageSpeed = function(track){
+        
+        var data = [];
 
         angular.forEach(track.points, function (point) {
-            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords.speed)) {
-                this.push({x: point.timestamp, y:point.coords.speed.toFixed(2)});
-            }
-        }, chartData.values);
 
-        return chartData;
+            if (!_.isUndefined(point.coords.speed) && point.coords.speed > 0) {
+                this.push(parseFloat(point.coords.speed));
+            }
+        }, data);
+
+        return _.mean(data).toFixed(2);
+        
+    };
+    
+    ts.getDisplacement = function(track){
+        
+        var data = [];
+
+        angular.forEach(track.points, function (point) {
+
+            if (!_.isUndefined(point.coords.altitude)) {
+                this.push(parseFloat(point.coords.altitude));
+            }
+        }, data);
+
+        return (_.max(data) - _.min(data)).toFixed(2);
+        
     }
+    
 
     /**
      * Write to local storage

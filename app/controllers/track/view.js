@@ -13,8 +13,12 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
     //points list, as required by Polyline
     var points = TrackStorage.getPolylinePoints($scope.track.points);
 
-    var altitudePoints = TrackStorage.getAltitudePoints($scope.track);
-    var speedPoints = TrackStorage.getSpeedPoints($scope.track);
+    var altitudePoints = TrackStorage.getChartData($scope.track, 'altitude');
+
+    var speedPoints = TrackStorage.getChartData($scope.track, 'speed');
+    
+    $scope.averageSpeed = TrackStorage.getAverageSpeed($scope.track);
+    $scope.displacement = TrackStorage.getDisplacement($scope.track);
 
     //map scale ratio, see app.js
     $rootScope.mapScreenScale = 1;
@@ -35,9 +39,13 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
 
     /* Chart options */
     $scope.altitudeChartOptions = {
+        title: {
+            enable: true,
+            text: $translate.instant('track.altitude')
+        },
         chart: {
-            type: 'multiChart',
-            height: 450,
+            type: 'lineChart',
+            height: 250,
             margin: {
                 top: 20,
                 right: 20,
@@ -53,11 +61,15 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
             interactiveLayer: {
                 tooltip: {
                     contentGenerator: function (d) {
+
                         var html = "<ul>";
 
                         d.series.forEach(function (elem) {
-                            html += "<li style='color:" + elem.color + "'>"
-                                    + elem.key + " : <b>" + elem.value + "</b></li>";
+                            
+                            var translatedKey = $translate.instant("track." + elem.key);
+                            
+                            html += "<li style='padding: 5px; color:" + elem.color + "'>"
+                                    + translatedKey + " : <b>" + elem.value + "</b></li>";
                         })
                         html += "</ul>"
                         return html;
@@ -67,38 +79,25 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
             xAxis: {
                 showMaxMin: false,
                 tickFormat: function (d) {
-                    return TrackStorage.formatPointTime((d - $scope.track.trackId)/1000);
+                    return TrackStorage.formatPointTime((d - $scope.track.trackId) / 1000);
                 }
             },
-            yAxis1: {
+            yAxis: {
                 showMaxMin: false,
                 tickFormat: function (d) {
-                    console.log("y1Axis", d)
-                    return d + ' м.';
+                    return d;
                 }
-            },
-            yAxis2: {
-                showMaxMin: false,
-                tickFormat: function (d) {
-                    console.log("y1Axi2", d)
-                    return d + ' м.';
-                }
-            },
-            zoom: {
-                enabled: true,
-                scaleExtent: [1, 10],
-                useFixedDomain: false,
-                useNiceScale: false,
-                horizontalOff: false,
-                verticalOff: true,
-                unzoomEventType: 'dblclick.zoom'
             }
         }
     };
+    
+    $scope.speedChartOptions = angular.copy($scope.altitudeChartOptions);
+    $scope.speedChartOptions.title.text = $translate.instant('track.speed');
 
     /* Chart data */
-    $scope.altitudeChartData = [altitudePoints, speedPoints];
-console.log($scope.altitudeChartData)
+    $scope.altitudeChartData = [altitudePoints];
+    $scope.speedChartData = [speedPoints];
+
     //Confirmation dialog in case the user clicks on the delete button
     $scope.confirmDelete = function () {
         var confirmPopup = $ionicPopup.confirm({
