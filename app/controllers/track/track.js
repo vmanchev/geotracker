@@ -1,7 +1,7 @@
 ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicLoading, $cordovaGeolocation, JsMapsService, NativeMapsService, TrackStorage, requiredMapType) {
 
     var mapSelector = 'map';
-    
+
     var mapService = (requiredMapType === 'js') ? JsMapsService : NativeMapsService;
 
     //has tracking been started or not
@@ -103,7 +103,7 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
             $scope.trackWatch.clearWatch();
             $scope.watchTracking();
 
-        }, function(data){
+        }, function (data) {
             $scope.positionSuccess(data);
         });
 
@@ -113,9 +113,9 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
     $scope.updateMap = function (latitude, longitude) {
         $scope.map = mapService.addMarker(
                 $scope.map,
-                latitude, 
+                latitude,
                 longitude
-        );
+                );
     }
 
     /**
@@ -232,7 +232,7 @@ ctrl.controller('TrackController', function ($rootScope, $scope, $state, $ionicL
     $scope.$on('tracking:saved', function (event, data) {
 
         $scope.map = mapService.remove($scope.map, mapSelector);
-        
+
         $scope.points = [];
         $scope.readyToSave = false;
 

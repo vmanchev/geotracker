@@ -133,10 +133,15 @@ geoApp.factory('TrackStorage', function ($translate) {
         var chartData = {key: key, values: []};
 
         angular.forEach(track.points, function (point) {
-
-            if (!_.isUndefined(point.timestamp) && !_.isUndefined(point.coords[key]) && !_.isEmpty(point.coords[key])) {
-                this.push({x:point.timestamp, y:point.coords[key]});
+            
+            var tmpKey = parseFloat(point.coords[key]);
+            
+            if(!_.isUndefined(point.timestamp) && !isNaN(tmpKey) && key === 'speed' && tmpKey >= 0){
+                
+            }else if (!_.isUndefined(point.timestamp) && !isNaN(tmpKey)) {
+                this.push({x:point.timestamp, y:tmpKey});
             }
+            
         }, chartData.values);
 
         return chartData;

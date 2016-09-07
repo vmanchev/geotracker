@@ -14,11 +14,15 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'toxic.geotracker.cont
                     StatusBar.styleDefault();
                 }
 
-                $rootScope.apikey = SettingsService.get().apikey;
+                $rootScope.settings = SettingsService.get();
+                $translate.use($rootScope.settings.locale.id);
 
-                $rootScope.$on('locale-changed', function (event, locale) {
-                    $translate.use(locale.id);
+                $rootScope.$on('settings-changed', function () {
+                    $rootScope.settings = SettingsService.get();
+                    $translate.use($rootScope.settings.locale.id);
                 });
+                
+                
 
                 // Find matches
                 var mql = window.matchMedia("(orientation: portrait)");
@@ -39,10 +43,12 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'toxic.geotracker.cont
                          * This is the app default orientation. Google Map should 
                          * be displayed with its initial height.
                          */
-                        $timeout(function () {
-                            angular.element(document.getElementById('map')).css('height', 'initial');
-                            google.maps.event.trigger($rootScope.map, 'resize');
-                        });
+                        if (google) {
+                            $timeout(function () {
+                                angular.element(document.getElementById('map')).css('height', '200px');
+                                google.maps.event.trigger($rootScope.map, 'resize');
+                            });
+                        }
                     } else {
                         /**
                          * Changed to landscape
@@ -51,10 +57,12 @@ var geoApp = angular.module('toxic.geotracker', ['ionic', 'toxic.geotracker.cont
                          * screen height and mapScreenScale, which is defined on 
                          * per controller basis. 
                          */
-                        $timeout(function () {
-                            angular.element(document.getElementById('map')).css('height', (screen.height * $rootScope.mapScreenScale) + 'px');
-                            google.maps.event.trigger($rootScope.map, 'resize');
-                        });
+                        if (google) {
+                            $timeout(function () {
+                                angular.element(document.getElementById('map')).css('height', (screen.height * $rootScope.mapScreenScale) + 'px');
+                                google.maps.event.trigger($rootScope.map, 'resize');
+                            });
+                        }
                     }
                 });
             });

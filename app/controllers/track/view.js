@@ -16,14 +16,14 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
     var altitudePoints = TrackStorage.getChartData($scope.track, 'altitude');
 
     var speedPoints = TrackStorage.getChartData($scope.track, 'speed');
-    
+
     $scope.averageSpeed = TrackStorage.getAverageSpeed($scope.track);
-    if($scope.averageSpeed === 0){
+    if ($scope.averageSpeed === 0) {
         $scope.averageSpeed = $translate.instant('common.na');
     }
-    
+
     $scope.displacement = TrackStorage.getDisplacement($scope.track);
-    if($scope.displacement === 0){
+    if ($scope.displacement === 0) {
         $scope.displacement = $translate.instant('common.na');
     }
 
@@ -31,7 +31,7 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
     $rootScope.mapScreenScale = 1;
 
     $timeout(function () {
-        mapService.initMap(mapSelector, {
+        $scope.map = mapService.initMap(mapSelector, {
             point: (points.length > 3) ? points[Math.ceil(points.length / 2)] : points[0],
             zoom: 16
         }).then(function (map) {
@@ -72,9 +72,9 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
                         var html = "<ul>";
 
                         d.series.forEach(function (elem) {
-                            
+
                             var translatedKey = $translate.instant("track." + elem.key);
-                            
+
                             html += "<li style='padding: 5px; color:" + elem.color + "'>"
                                     + translatedKey + " : <b>" + elem.value + "</b></li>";
                         })
@@ -97,7 +97,7 @@ ctrl.controller('TrackViewController', function ($rootScope, $scope, $state, $io
             }
         }
     };
-    
+
     $scope.speedChartOptions = angular.copy($scope.altitudeChartOptions);
     $scope.speedChartOptions.title.text = $translate.instant('track.speed');
 

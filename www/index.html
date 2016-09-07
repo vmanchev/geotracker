@@ -14,11 +14,10 @@
 
         <script type="text/javascript" src="js/bower.min.js"></script>
         <script type="text/javascript" src="js/app.min.js"></script>
-        <script src="http://192.168.0.102:8080/target/target-script-min.js#anonymous"></script>
     </head>
 
     <body ng-app="toxic.geotracker">
-        <script ng-src="{{ apikey | mapsUrl }}"></script>
+        <script async ng-if="settings.mapType.id === 'js'" ng-src="{{ settings.apikey | mapsUrl }}"></script>
         <ion-nav-view></ion-nav-view>
     </body>
 </html>

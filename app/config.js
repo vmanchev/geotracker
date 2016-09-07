@@ -11,7 +11,7 @@ config = {
           id: 'en',
           name: 'English'
       },
-      mapType: 'js',
+      mapType: 'native',
       apikey : 'AIzaSyAFqZ9Fs3e9PK0YpfOom-Ewi_gh4qV0eqc'
     }
 };
